@@ -1,7 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 /* Golbal */
+
+
+
+.nav-item {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 800;
+}
+
+.nav-link {
+    color: rgb(240, 240, 240, 0.9) !important;
+}
+
+
+
+.active {
+    color: white !important;
+    border-bottom: 3px solid white !important;
+}
+
+
+
+
 /*  */
 
 /* Home */
+
+.main {
+    background-image: url("./assets/background.jpg")
+}
+
+.heading {
+    font-size: 4em;
+}
+
+.home>h3 {
+    font-size: 2em;
+}
+
+.learn-more {
+    outline: none;
+    background: none;
+    padding: 0.7em 1em;
+    margin-top: 10px;
+    border: 2px solid black;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 5px;
+}
+
+.learn-more:hover {
+    outline: none;
+    /* background: #FF8C00; */
+    background: #0000cd;
+    color: white;
+    transition: 0.2s;
+    border: 2px solid #0000cd;
+}
+
 /*  */
 
 /* Members */
