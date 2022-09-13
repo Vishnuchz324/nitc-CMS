@@ -151,7 +151,9 @@ ul.social li a {
 
 /* Contact */
 .row-no-gutters{
-    padding: 50px;
+    display: flex;
+    
+    
 }
 
   
