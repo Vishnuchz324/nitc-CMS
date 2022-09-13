@@ -15,7 +15,7 @@
 
 
 
-.active {
+.active { 
     color: white !important;
     border-bottom: 3px solid white !important;
 }
@@ -28,7 +28,9 @@
 /* Home */
 
 .main {
-    background-image: url("./assets/background.jpg")
+    background-image: url("./assets/background.jpg");
+    background-color: powderblue;
+
 }
 
 .heading {
@@ -67,4 +69,9 @@
 /*  */
 
 /* Contact */
+.row-no-gutters{
+    padding: 50px;
+}
+
+  
 /*  */
