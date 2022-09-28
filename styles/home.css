@@ -1,0 +1,15 @@
+.ref {
+    text-decoration: none;
+    color: black
+}
+
+.card-box {
+    border: 1px solid #0000cd;
+    cursor: pointer;
+}
+
+.card-box:hover {
+    transform: scale(1.05);
+    color: #0000cd;
+    transition: 0.7s;
+}
