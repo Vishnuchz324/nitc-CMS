@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../styles/home.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="../styles/home.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+</head>
+<title>Home</title>
+</head>
+
+<body class="main">
+    <section class=" my-4">
+        <div id="nav-placeholder" style="width:100%"></div>
+        <!-- Home Page -->
+        <div class="sidebar col-md-2 col-xs-12">
+            <div class="sidebar-block">
+                <a class="active" href="#home">Home</a>
+            </div>
+            <a href="#news">News</a>
+            <a href="#contact">Contact</a>
+            <a href="#about">About</a>
+        </div>
+        <div class="content  col-md-6">
+            <div class="p-4">
+                <h3 class="text-center m-4">Complaint Register System</h3>
+                <div class="d-flex justify-content-around">
+                    <a href="register.html" class="ref">
+                        <div class="card card-box p-4 my-3 align-items-center justify-content-center"
+                            style="max-width: 20rem; height: 10rem;">
+                            <h4 class="card-title">Register Complaints</h4>
+                            <p class="card-text p-y-1">Regsiter a new Complaint .</p>
+                        </div>
+                    </a>
+                    <a href="complaints.html" class="ref">
+                        <div class="card card-box  p-4 my-3 align-items-center justify-content-center"
+                            style="max-width: 20rem; height: 10rem;">
+                            <h4 class="card-title">Complaints</h4>
+                            <p class="card-text p-y-1">View all thge complaints registered by all users .</p>
+                        </div>
+                    </a>
+                    <a href="registered-complaints.html" class="ref">
+                        <div class="card card-box p-4  my-3 align-items-center justify-content-center"
+                            style="max-width: 20rem; height: 10rem;">
+                            <h4 class="card-title">Registered </h4>
+                            <p class="card-text p-y-1">View all the registered complaints by you .</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        </div>
+        <!-- Home Page -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+            $(function () {
+                $("#nav-placeholder").load("./nav.html");
+            });
+        </script>
+</body>
+
+</html>
