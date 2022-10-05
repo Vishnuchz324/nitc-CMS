@@ -1,74 +1,99 @@
-.ref {
-    text-decoration: none;
-    color: black
+.main-container {
+    display: flex;
 }
 
-.card-box {
+.block {
+    border-radius: 15px;
+    background-color: whitesmoke;
+    margin: 0% 1%;
+    padding: 1px 16px;
+    flex-grow: 1;
+    height: 92vh;
+}
+
+.block__header {
+    padding: 2%;
+    text-align: center;
+}
+
+.block__body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 1%;
+}
+
+.block__body_box {
+    text-decoration: none;
+    color: black;
+    min-width: 20rem;
+    margin: 1%;
+    border-radius: 10px;
+}
+
+.block__body_card {
     border: 1px solid #0000cd;
     cursor: pointer;
+    max-width: 18rem;
+    height: 10rem;
+    border: none !important;
+    text-decoration: none !important;
+    border-radius: 5px;
+    text-align: center;
 }
 
-.card-box:hover {
-    transform: scale(1.05);
+.block__body_card:hover {
+    transform: scale(1.02);
     color: #0000cd;
-    transition: 0.7s;
+    transition: 1s;
+}
+
+.card {
+    background-color: white;
 }
 
 
-.sidebar {
-    margin: 0;
-    padding: 0;
-    /* width: ; */
-    min-width: 300px;
-    background-color: rgb(235, 235, 235);
-
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-}
-
-.sidebar a {
-    display: block;
-    color: white;
-    padding: 16px;
-    text-decoration: none;
-}
-
-.sidebar a.active {
-    background-color: #04AA6D;
-    color: white;
-}
-
-.sidebar a:hover:not(.active) {
-    background-color: #555;
-    color: white;
-}
-
-/* div.content {
-        margin-left: 200px;
-        padding: 1px 16px;
-        height: 1000px;
-    } */
-
-@media screen and (max-width: 700px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    .sidebar a {
-        float: left;
-    }
-
-    div.content {
-        margin-left: 0;
+@media screen and (max-width: 1500px) {
+    .block__body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: green;
     }
 }
+
+
+@media screen and (max-width: 900px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .block {
+        border-radius: 0%;
+        padding: 1px;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
 
 @media screen and (max-width: 400px) {
-    .sidebar a {
-        text-align: center;
-        float: none;
+    .block__header {
+        font-size: larger;
     }
+
+    .block__body_box {
+        margin: 3%;
+    }
+
+    .block__body_card>p {
+        font-size: medium;
+    }
+
+    .block__body_card>h4 {
+        font-size: large;
+    }
+
 }

@@ -1,0 +1,18 @@
+.learn-more {
+    outline: none;
+    background: none;
+    padding: 0.7em 1em;
+    margin-top: 10px;
+    border: 2px solid black;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 5px;
+}
+
+.learn-more:hover {
+    outline: none;
+    /* background: #FF8C00; */
+    background: #0000cd;
+    color: white;
+    transition: 0.2s;
+    border: 2px solid #0000cd;
+}
