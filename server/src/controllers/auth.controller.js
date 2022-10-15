@@ -1,9 +1,16 @@
+import { validationResult } from "express-validator";
 import logger from "../services/logger.service.js";
 
-const get = async (req, res) => {
+const signIn = async (req, res) => {
 	logger.info("from controller");
 };
 
+const signUp = async (req, res) => {
+	logger.info("from controller");
+	res.send("Hello");
+};
+
 export default {
-	get,
+	signIn,
+	signUp,
 };
