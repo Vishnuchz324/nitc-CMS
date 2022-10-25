@@ -7,48 +7,59 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./cms.db"
+  url      = "file: database/cms.db"
 }
 
 model Tag {
-  id          Int        @id @default(autoincrement())
-  tag         String     @unique
-  Complaint   Complaint? @relation(fields: [complaintId], references: [id])
-  complaintId Int?
+  id         Int               @id @default(autoincrement())
+  title      String            @unique
+  complaints TagsOnComplaint[]
 }
 
 model Profile {
-  id       Int        @id @default(autoincrement())
-  name     String
-  password String
-  email    String     @unique
-  contact  String     @unique
-  User     User[]
-  Admin    Admin[]
-  Reviewer Reviewer[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  password  String
+  email     String    @unique
+  contact   String    @unique
+  createdAt DateTime  @default(now())
+  role      String    @default("USER")
+  User      User?
+  Admin     Admin?
+  Reviewer  Reviewer?
 }
 
 model Complaint {
-  id          Int      @id @default(autoincrement())
-  title       String   @unique
+  id          Int               @id @default(autoincrement())
+  title       String            @unique
   description String?
-  tags        Tag[]
+  tags        TagsOnComplaint[]
   status      String
   numVotes    Int
-  date        DateTime
-  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime?         @updatedAt
+  user        User              @relation(fields: [userId], references: [id])
   userId      Int
 
   Work      Work[]
   Validated Validated[]
 }
 
+model TagsOnComplaint {
+  complaint   Complaint @relation(fields: [complaintId], references: [id])
+  complaintId Int
+  tag         Tag       @relation(fields: [tagId], references: [id])
+  tagId       Int
+
+  @@id([complaintId, tagId])
+}
+
 model User {
   id         Int         @id @default(autoincrement())
   profile    Profile?    @relation(fields: [profileId], references: [id])
-  profileId  Int?
+  profileId  Int         @unique
   department String
-  role       String      @default("USER")
+  rollNo     String      @unique
   Complaint  Complaint[]
 }
 
@@ -56,7 +67,7 @@ model Admin {
   id          Int        @id @default(autoincrement())
   designation String?
   profile     Profile?   @relation(fields: [profileId], references: [id])
-  profileId   Int?
+  profileId   Int        @unique
   Work        Work[]
   Validated   Validated? @relation(fields: [validatedId], references: [id])
   validatedId Int?
@@ -65,7 +76,8 @@ model Admin {
 model Reviewer {
   id        Int         @id @default(autoincrement())
   profile   Profile?    @relation(fields: [profileId], references: [id])
-  profileId Int?
+  profileId Int         @unique
+  rollNo    String      @unique
   Validated Validated[]
 }
 
@@ -78,7 +90,7 @@ model Work {
   workerName   String
   report       String?
   status       String
-  assignedDate DateTime
+  assignedDate DateTime? @updatedAt
 }
 
 model Validated {
@@ -89,4 +101,5 @@ model Validated {
   reviewerId  Int
   asdignedTo  Admin[]
   status      String
+  validatedAt DateTime? @updatedAt
 }
