@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "./database.service.js";
 import { ROLES } from "./enums/auth.enum.js";
-
 import jwt from "jsonwebtoken";
 import { HttStatusMessage } from "./enums/errors.enum.js";
 
@@ -62,7 +61,6 @@ const createUser = async (profileData) => {
 		errors.push(HttStatusMessage.MISSING_PARAMTER("department"));
 	if (errors.length === 0)
 		try {
-			const prisma = new PrismaClient();
 			user = await prisma.user.create({
 				data: {
 					department: profileData.department,

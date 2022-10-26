@@ -57,7 +57,7 @@ const registerComplaint = async (req, res) => {
 const updateComplaint = async (req, res) => {
 	try {
 		const user = req.user;
-		const complaintId = req.params.complaintId;
+		const complaintId = parseInt(req.params.complaintId);
 		const complaintData = req.complaint;
 		const [errors, complaint] = await complaintService.updateComplaint(
 			complaintId,

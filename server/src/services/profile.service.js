@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { prisma } from "./database.service.js";
 
 /**
  * Checks wheather the email is registered
@@ -6,7 +7,6 @@ import { PrismaClient } from "@prisma/client";
  * @returns  {boolean}
  */
 const isEmailExists = async (email) => {
-	const prisma = new PrismaClient();
 	try {
 		let profile = await prisma.profile.findFirst({
 			where: {
@@ -26,7 +26,6 @@ const isEmailExists = async (email) => {
  * @returns  {boolean}
  */
 const isContactExists = async (contact) => {
-	const prisma = new PrismaClient();
 	try {
 		let profile = await prisma.profile.findFirst({
 			where: {

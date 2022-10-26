@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { prisma } from "./database.service.js";
 
 /**
  * Gets a user from email
@@ -6,7 +7,6 @@ import { PrismaClient } from "@prisma/client";
  * @returns {object} - the user and profile data
  */
 const getUser = async (loginData) => {
-	const prisma = new PrismaClient();
 	try {
 		let user = await prisma.profile.findUnique({
 			where: {

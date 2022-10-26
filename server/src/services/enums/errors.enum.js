@@ -21,4 +21,5 @@ export const HttStatusMessage = {
 	INVALID_TOKEN: "invalid access Token",
 	NO_PERMISSION: "permission denied",
 	COMPLAINT_EXISTS: "complaint with title already registered",
+	INVALID_COMPLAINT: "invalid complaint id",
 };
