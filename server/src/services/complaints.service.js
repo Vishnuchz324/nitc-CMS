@@ -37,11 +37,33 @@ const getComplaintByTitle = async (title) => {
  * @returns  {object[]} - complaints array
  */
 const getComplaintByUser = async (user) => {
-	const complaints = prisma.complaint.findMany({
+	let complaints = await prisma.complaint.findMany({
 		where: {
 			userId: user.id,
 		},
+		select: {
+			id: true,
+			title: true,
+			description: true,
+			status: true,
+			_count: {
+				select: {
+					upvotedBy: true,
+				},
+			},
+		},
+		orderBy: {
+			upvotedBy: {
+				_count: "desc",
+			},
+		},
 	});
+	if (complaints)
+		complaints.map((complaint) => {
+			complaint.numVotes = complaint._count.upvotedBy;
+			delete complaint._count;
+			return complaint;
+		});
 	return complaints;
 };
 
@@ -49,10 +71,74 @@ const getComplaintByUser = async (user) => {
  * Returns all the registered complaints
  * @returns  {object[]} - complaints array
  */
-const getAllComplaints = async () => {
+const getAllComplaints = async (userId) => {
+	let complaints = await prisma.complaint.findMany({
+		select: {
+			id: true,
+			title: true,
+			description: true,
+			status: true,
+			userId: true,
+			upvotedBy: {
+				select: { id: true },
+			},
+			_count: {
+				select: {
+					upvotedBy: true,
+				},
+			},
+		},
+		orderBy: {
+			upvotedBy: {
+				_count: "desc",
+			},
+		},
+	});
+	complaints.map((complaint) => {
+		const numVotes = complaint._count.upvotedBy;
+		const upVotedUsers = complaint.upvotedBy;
+		let upvoted = false;
+
+		upVotedUsers.map((user) => {
+			if (user.id === userId) upvoted = true;
+		});
+
+		complaint.numVotes = numVotes;
+		complaint.upvoted = upvoted;
+
+		delete complaint.upvotedBy;
+		delete complaint._count;
+
+		return complaint;
+	});
+	return complaints;
+};
+
+const getNumberUpVotes = async (complaintId) => {
+	const numVotes = await prisma.complaint.findUnique({
+		where: {
+			id: complaintId,
+		},
+		select: {
+			_count: {
+				select: {
+					upvotedBy: true,
+				},
+			},
+		},
+	});
+	return numVotes._count.upvotedBy;
+};
+
+const getUpvotedComplaints = async (userId) => {
 	const complaints = await prisma.complaint.findMany({
 		where: {
 			status: COMPLAINT_STATUS.NOT_VERIFIED,
+			upvoted: {
+				some: {
+					id: userId,
+				},
+			},
 		},
 	});
 	return complaints;
@@ -97,11 +183,11 @@ const createComplaint = async (complaintData, user) => {
  * @param {object} complaintData complaint data from the client
  * @returns  {object} - complaint
  */
-const updateComplaint = async (complaintId, user, complaintData) => {
+const updateComplaint = async (complaintId, userId, complaintData) => {
 	let errors = [];
 	let complaint = await getComplaintById(complaintId);
 	if (!complaint) errors.push(HttStatusMessage.INVALID_COMPLAINT);
-	if (complaint.userId !== user.id)
+	else if (complaint.userId !== userId)
 		if (user.role !== ROLES.REVIEWER && user.role !== ROLES.ADMIN)
 			errors.push(HttStatusMessage.NO_PERMISSION);
 	if (errors.length === 0) {
@@ -128,9 +214,38 @@ const updateComplaint = async (complaintId, user, complaintData) => {
 	return [errors, complaint];
 };
 
+const upVoteComplaint = async (complaintId, userId) => {
+	let errors = [];
+	let complaint = {};
+	let numVotes;
+	let complaintExists = await getComplaintById(complaintId);
+	if (!complaintExists) errors.push(HttStatusMessage.INVALID_COMPLAINT);
+	if (errors.length === 0)
+		try {
+			complaint = await prisma.complaint.update({
+				where: {
+					id: complaintId,
+				},
+				data: {
+					upvotedBy: {
+						connect: {
+							id: userId,
+						},
+					},
+				},
+			});
+			numVotes = await getNumberUpVotes(complaintId);
+			complaint.numVotes = numVotes;
+		} catch (err) {
+			throw err;
+		}
+	return [errors, complaint];
+};
+
 export default {
 	createComplaint,
 	getAllComplaints,
 	getComplaintByUser,
 	updateComplaint,
+	upVoteComplaint,
 };

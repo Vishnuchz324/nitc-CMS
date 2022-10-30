@@ -1,10 +1,11 @@
-import { createUser, generateAccesToken } from "../services/auth.service.js";
-import { getUser } from "../services/user.service.js";
+import authService from "../services/auth.service.js";
+import profileService from "../services/profile.service.js";
+import userService from "../services/user.service.js";
+
 import {
 	HttpStatusCodes,
 	HttStatusMessage,
 } from "../services/enums/errors.enum.js";
-import { isContactExists, isEmailExists } from "../services/profile.service.js";
 
 /**
  * User Signin
@@ -13,9 +14,9 @@ import { isContactExists, isEmailExists } from "../services/profile.service.js";
 const signIn = async (req, res) => {
 	try {
 		const loginData = req.loginData;
-		const profile = await getUser(loginData);
+		const profile = await userService.getUser(loginData);
 		if (profile) {
-			profile.token = generateAccesToken(profile);
+			profile.token = authService.generateAccesToken(profile);
 			res.status(HttpStatusCodes.OK).send(profile);
 			console.log(profile);
 		} else {
@@ -36,24 +37,24 @@ const signUp = async (req, res) => {
 	const profileData = req.profile;
 	try {
 		// check if the email is already registered
-		if (await isEmailExists(profileData.email))
+		if (await profileService.isEmailExists(profileData.email))
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
 				.send({ message: HttStatusMessage.EMAIL_EXISTS });
 
 		// check if the contact number is already registered
-		if (await isContactExists(profileData.contact))
+		if (await profileService.isContactExists(profileData.contact))
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
 				.send({ message: HttStatusMessage.CONTACT_EXISTS });
 
 		// create s anew user in the database
-		const [profile, errors] = await createUser(profileData);
+		const [profile, errors] = await authService.createUser(profileData);
 		if (errors.length !== 0) {
 			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
 		}
 		// generates an access token
-		profile.token = generateAccesToken(profile);
+		profile.token = authService.generateAccesToken(profile);
 		console.log(`created profile ${profile.name}`);
 		res.status(HttpStatusCodes.CREATED).send(profile);
 	} catch (err) {
@@ -61,4 +62,4 @@ const signUp = async (req, res) => {
 	}
 };
 
-export { signIn, signUp };
+export default { signIn, signUp };

@@ -1,4 +1,4 @@
-import { validationResult, body } from "express-validator";
+import { validationResult, body, param } from "express-validator";
 import { HttpStatusCodes } from "../services/enums/errors.enum.js";
 
 /**
@@ -17,5 +17,6 @@ const validator = (validations) => {
 	};
 };
 
-const validate = (param) => body(param);
-export { validator, validate };
+const validateBody = (val) => body(val);
+const validateQuery = (val) => param(val);
+export { validator, validateBody, validateQuery };

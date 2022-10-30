@@ -1,5 +1,9 @@
 import express from "express";
-import { validate, validator } from "../middleware/validator.middleware.js";
+import {
+	validateBody,
+	validateQuery,
+	validator,
+} from "../middleware/validator.middleware.js";
 import complaintController from "../controllers/complaint.controller.js";
 import { getComplaintFromBody } from "../middleware/complaints.middleware.js";
 import { verifyUser } from "../middleware/auth.middleware.js";
@@ -11,7 +15,7 @@ const router = express.Router();
 
 /**
  * Route to get complaints registerd by the user.
- * @name put/update/:complaintId
+ * @name get/
  * verifyUser - ensure proper autherization and extracts the user details
  * getAllComplaints - gets all the complaints registerd by the user.
  */
@@ -19,10 +23,10 @@ router.get("/", verifyUser, complaintController.getRegisteredComplaints);
 
 /**
  * Route to get all complaints.
- * @name put/update/:complaintId
+ * @name get/all
  * getAllComplaints - gets all the registered complaints that are not completed.
  */
-router.get("/all", complaintController.getAllComplaints);
+router.get("/all", verifyUser, complaintController.getAllComplaints);
 
 /**
  * Route serving registering new complaint.
@@ -35,8 +39,8 @@ router.get("/all", complaintController.getAllComplaints);
 router.post(
 	"/register",
 	validator([
-		validate("title").exists().isString().isLength({ max: 20 }),
-		validate("description").isString(),
+		validateBody("title").exists().isString().isLength({ max: 20 }),
+		validateBody("description").isString(),
 	]),
 	verifyUser,
 	getComplaintFromBody,
@@ -54,12 +58,20 @@ router.post(
 router.put(
 	"/update/:complaintId",
 	validator([
-		validate("title").exists().isString().isLength({ max: 20 }),
-		validate("description").isString(),
+		validateQuery("complaintId").exists().toInt().isNumeric(),
+		validateBody("title").exists().isString().isLength({ max: 20 }),
+		validateBody("description").isString(),
 	]),
 	verifyUser,
 	getComplaintFromBody,
 	complaintController.updateComplaint
+);
+
+router.put(
+	"/upvote/:complaintId",
+	validator([validateQuery("complaintId").exists().toInt().isNumeric()]),
+	verifyUser,
+	complaintController.upVoteComplaint
 );
 
 export default router;

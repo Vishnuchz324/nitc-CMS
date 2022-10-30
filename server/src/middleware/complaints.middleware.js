@@ -11,8 +11,6 @@ const getComplaintFromBody = (req, res, next) => {
 		const complaint = {
 			title: body.title,
 			description: body.description || "",
-			tags: body.tags,
-			numVotes: 0,
 			status: COMPLAINT_STATUS.NOT_VERIFIED,
 		};
 		req.complaint = complaint;

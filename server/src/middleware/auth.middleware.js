@@ -1,4 +1,4 @@
-import { verifyAccesToken } from "../services/auth.service.js";
+import authService from "../services/auth.service.js";
 import { ROLES } from "../services/enums/auth.enum.js";
 import {
 	HttpStatusCodes,
@@ -55,7 +55,7 @@ const verifyUser = (req, res, next) => {
 	const authHeader = req.headers.authorization;
 	if (authHeader) {
 		const token = authHeader.split(" ")[1];
-		const [err, data] = verifyAccesToken(token);
+		const [err, data] = authService.verifyAccesToken(token);
 		if (err)
 			res
 				.status(HttpStatusCodes.ACCES_FORBIDDEN)
@@ -76,14 +76,20 @@ const verifyUser = (req, res, next) => {
  * ensures the user is a reviewer
  */
 const verifyReviewer = (req, res, next) => {
-	verifyUser(req, res, next);
 	const profile = req.user;
-	if (profile.role !== ROLES.REVIEWER) {
+	if (profile) {
+		if (profile.role !== ROLES.REVIEWER)
+			res
+				.status(HttpStatusCodes.ACCES_FORBIDDEN)
+				.send({ message: HttStatusMessage.NO_PERMISSION });
+		else {
+			next();
+		}
+	} else {
 		res
-			.status(HttpStatusCodes.ACCES_FORBIDDEN)
-			.send({ message: HttStatusMessage.NO_PERMISSION });
+			.status(HttpStatusCodes.NO_AUTHERIZATION)
+			.send({ message: HttStatusMessage.NO_AUTHERIZATION });
 	}
-	next();
 };
 
 /**
@@ -91,14 +97,22 @@ const verifyReviewer = (req, res, next) => {
  * ensures the user is an admin
  */
 const verifyAdmin = (req, res, next) => {
-	verifyUser(req, res, next);
-	const profile = req.user;
-	if (profile.role !== ROLES.ADMIN) {
-		res
-			.status(HttpStatusCodes.ACCES_FORBIDDEN)
-			.send({ message: HttStatusMessage.NO_PERMISSION });
-	}
-	next();
+	verifyUser(req, res, () => {
+		const profile = req.user;
+		if (profile) {
+			if (profile.role !== ROLES.ADMIN)
+				res
+					.status(HttpStatusCodes.ACCES_FORBIDDEN)
+					.send({ message: HttStatusMessage.NO_PERMISSION });
+			else {
+				next();
+			}
+		} else {
+			res
+				.status(HttpStatusCodes.NO_AUTHERIZATION)
+				.send({ message: HttStatusMessage.NO_AUTHERIZATION });
+		}
+	});
 };
 
 export {

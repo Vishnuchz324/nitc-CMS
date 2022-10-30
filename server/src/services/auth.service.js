@@ -2,6 +2,7 @@ import { prisma } from "./database.service.js";
 import { ROLES } from "./enums/auth.enum.js";
 import jwt from "jsonwebtoken";
 import { HttStatusMessage } from "./enums/errors.enum.js";
+import userService from "./user.service.js";
 
 /**
  * Generates an acces token
@@ -32,20 +33,6 @@ const verifyAccesToken = (token) => {
 };
 
 /**
- * Returns the profile data
- * @param {object} profileData - the profile data sent by the client
- * @returns  {object} - the profile data
- */
-const createProfile = (profileData) => {
-	return {
-		name: profileData.name,
-		password: profileData.password,
-		email: profileData.email,
-		contact: profileData.contact,
-	};
-};
-
-/**
  * Creates a new user
  * @param {object} - profileData the profile data sent by the client
  * @returns {object} - list of errors and the user data
@@ -61,15 +48,7 @@ const createUser = async (profileData) => {
 		errors.push(HttStatusMessage.MISSING_PARAMTER("department"));
 	if (errors.length === 0)
 		try {
-			user = await prisma.user.create({
-				data: {
-					department: profileData.department,
-					rollNo: profileData.rollNo,
-					profile: {
-						create: { ...createProfile(profileData), role: ROLES.USER },
-					},
-				},
-			});
+			user = userService.createUser(profileData);
 			delete user.password;
 		} catch (err) {
 			errors.push(err.message);
@@ -77,4 +56,4 @@ const createUser = async (profileData) => {
 	return [user, errors];
 };
 
-export { createUser, generateAccesToken, verifyAccesToken };
+export default { createUser, generateAccesToken, verifyAccesToken };

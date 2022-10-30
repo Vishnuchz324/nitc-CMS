@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { prisma } from "./database.service.js";
 
 /**
@@ -39,4 +38,37 @@ const isContactExists = async (contact) => {
 	}
 };
 
-export { isContactExists, isEmailExists };
+const updateProfileRole = async (profileId, role) => {
+	try {
+		let profile = await prisma.profile.update({
+			where: {
+				id: profileId,
+			},
+			data: {
+				role: role,
+			},
+		});
+		return profile;
+	} catch (err) {
+		throw err;
+	}
+};
+
+const getProfileFromData = async (loginData) => {
+	let profile = await prisma.profile.findUnique({
+		where: {
+			email: loginData.email,
+		},
+		include: {
+			User: true,
+		},
+	});
+	return profile;
+};
+
+export default {
+	isContactExists,
+	isEmailExists,
+	getProfileFromData,
+	updateProfileRole,
+};

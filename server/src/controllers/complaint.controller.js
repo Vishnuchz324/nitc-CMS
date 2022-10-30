@@ -1,5 +1,9 @@
 import complaintService from "../services/complaints.service.js";
-import { HttpStatusCodes } from "../services/enums/errors.enum.js";
+
+import {
+	HttpStatusCodes,
+	HttStatusMessage,
+} from "../services/enums/errors.enum.js";
 
 /**
  * Get all the complaints registered to the user
@@ -20,8 +24,9 @@ const getRegisteredComplaints = async (req, res) => {
  * @returns complaint array
  */
 const getAllComplaints = async (req, res) => {
+	const user = req.user;
 	try {
-		let complaints = await complaintService.getAllComplaints();
+		const complaints = await complaintService.getAllComplaints(user.id);
 		res.status(HttpStatusCodes.OK).send(complaints);
 	} catch (err) {
 		console.log(err);
@@ -40,11 +45,12 @@ const registerComplaint = async (req, res) => {
 			complaintData,
 			user
 		);
-		if (errors.length !== 0) {
+		if (errors.length === 0) {
 			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
+		} else {
+			console.log(`complaint registered "${complaint.title}"`);
+			res.status(HttpStatusCodes.CREATED).send(complaint);
 		}
-		console.log(`complaint registered "${complaint.title}"`);
-		res.status(HttpStatusCodes.CREATED).send(complaint);
 	} catch (err) {
 		console.log(err);
 	}
@@ -56,18 +62,36 @@ const registerComplaint = async (req, res) => {
  */
 const updateComplaint = async (req, res) => {
 	try {
-		const user = req.user;
+		const userId = req.user.id;
 		const complaintId = parseInt(req.params.complaintId);
 		const complaintData = req.complaint;
 		const [errors, complaint] = await complaintService.updateComplaint(
 			complaintId,
-			user,
+			userId,
 			complaintData
 		);
 		if (errors.length !== 0) {
 			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
+		} else {
+			res.status(HttpStatusCodes.OK).send(complaint);
 		}
-		res.status(HttpStatusCodes.OK).send(complaint);
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+const upVoteComplaint = async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const complaintId = parseInt(req.params.complaintId);
+		const [errors, complaint] = await complaintService.upVoteComplaint(
+			complaintId,
+			userId
+		);
+		if (errors.length !== 0) {
+			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
+		}
+		res.status(HttpStatusCodes.CREATED).send(complaint);
 	} catch (err) {
 		console.log(err);
 	}
@@ -78,4 +102,5 @@ export default {
 	getAllComplaints,
 	getRegisteredComplaints,
 	updateComplaint,
+	upVoteComplaint,
 };
