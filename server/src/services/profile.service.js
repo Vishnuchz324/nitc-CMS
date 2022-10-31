@@ -61,6 +61,7 @@ const getProfileFromData = async (loginData) => {
 		},
 		include: {
 			User: true,
+			Admin: true,
 		},
 	});
 	return profile;

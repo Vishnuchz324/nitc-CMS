@@ -45,7 +45,7 @@ const registerComplaint = async (req, res) => {
 			complaintData,
 			user
 		);
-		if (errors.length === 0) {
+		if (errors.length !== 0) {
 			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
 		} else {
 			console.log(`complaint registered "${complaint.title}"`);
@@ -62,12 +62,12 @@ const registerComplaint = async (req, res) => {
  */
 const updateComplaint = async (req, res) => {
 	try {
-		const userId = req.user.id;
+		const user = req.user;
 		const complaintId = parseInt(req.params.complaintId);
 		const complaintData = req.complaint;
 		const [errors, complaint] = await complaintService.updateComplaint(
 			complaintId,
-			userId,
+			user,
 			complaintData
 		);
 		if (errors.length !== 0) {

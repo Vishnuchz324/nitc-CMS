@@ -20,14 +20,27 @@ const router = express.Router();
 router.get("/reviewer", verifyAdmin, adminController.getAllReviewers);
 
 /**
- * Route registering a reviewer.
- * @name post/reviewer/:[userId]
+ * Route registering a admin.
+ * @name post/register
  * validate - validate the data with the provided constraints
  * verifyAdmin - ensure proper autherization and extracts the admin route
  * createReviewer - creates a new reviewer
  */
 router.post(
-	"/reviewer/:userId",
+	"/reviewer",
+	validator([validateQuery("userId").exists().toInt().isNumeric()]),
+	verifyAdmin
+);
+
+/**
+ * Route registering a reviewer.
+ * @name post/register/reviewer/:[userId]
+ * validate - validate the data with the provided constraints
+ * verifyAdmin - ensure proper autherization and extracts the admin route
+ * createReviewer - creates a new reviewer
+ */
+router.post(
+	"/register/reviewer/:userId",
 	validator([validateQuery("userId").exists().toInt().isNumeric()]),
 	verifyAdmin,
 	adminController.createReviewer
