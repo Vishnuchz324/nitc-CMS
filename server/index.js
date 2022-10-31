@@ -12,6 +12,10 @@ import complaintRouter from "./src/routes/complaint.routes.js";
 import adminRouter from "./src/routes/admin.routes.js";
 import reviewerRouter from "./src/routes/reviewer.routes.js";
 
+app.get("/", (req, res) => {
+	res.status(210).send("Hello");
+});
+
 app.use("/complaint", complaintRouter);
 app.use("/auth", authRouter);
 app.use("/reviewer", reviewerRouter);
@@ -25,3 +29,5 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
 	console.log("listening");
 });
+
+export default app;

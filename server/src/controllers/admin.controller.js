@@ -27,13 +27,6 @@ const createReviewer = async (req, res) => {
 	}
 };
 
-const creaAdmin = async (req, res) => {
-	try {
-	} catch (err) {
-		console.log(err);
-	}
-};
-
 const getAllReviewers = async (req, res) => {
 	try {
 		const reviewers = await reviewerService.getAllReviewers();

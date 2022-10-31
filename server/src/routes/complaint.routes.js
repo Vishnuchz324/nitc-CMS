@@ -59,8 +59,11 @@ router.put(
 	"/update/:complaintId",
 	validator([
 		validateQuery("complaintId").exists().toInt().isNumeric(),
-		validateBody("title").exists().isString().isLength({ max: 20 }),
-		validateBody("description").isString(),
+		validateBody("title")
+			.isString()
+			.isLength({ max: 20 })
+			.optional({ nullable: true }),
+		validateBody("description").isString().optional({ nullable: true }),
 	]),
 	verifyUser,
 	getComplaintFromBody,

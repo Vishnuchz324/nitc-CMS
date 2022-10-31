@@ -4,6 +4,7 @@ import {
 	HttpStatusCodes,
 	HttStatusMessage,
 } from "../services/enums/errors.enum.js";
+import userService from "../services/user.service.js";
 
 /**
  * Extracts the profile details from the request body
@@ -51,7 +52,7 @@ const getLoginDataFromBody = (req, res, next) => {
  * Extracts the profile/user details from the request body
  * appends the object {user} to the request body
  */
-const verifyUser = (req, res, next) => {
+const verifyUser = async (req, res, next) => {
 	const authHeader = req.headers.authorization;
 	if (authHeader) {
 		const token = authHeader.split(" ")[1];
@@ -61,8 +62,16 @@ const verifyUser = (req, res, next) => {
 				.status(HttpStatusCodes.ACCES_FORBIDDEN)
 				.send({ message: HttStatusMessage.INVALID_TOKEN });
 		else {
-			req.user = data;
-			next();
+			const isUserExists = await userService.getUserById(parseInt(data.id));
+			if (!isUserExists)
+				res
+					.status(HttpStatusCodes.UNAUTHORIZED)
+					.send({ message: HttStatusMessage.INVALID_USER });
+			else {
+				data.id = parseInt(data.id);
+				req.user = data;
+				next();
+			}
 		}
 	} else {
 		res

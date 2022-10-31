@@ -23,4 +23,5 @@ export const HttStatusMessage = {
 	COMPLAINT_EXISTS: "complaint with title already registered",
 	INVALID_COMPLAINT: "invalid complaint id",
 	INVALID_USER: "user doesnot exists",
+	INVALID_CREDENTIALS: "invalid credentials",
 };

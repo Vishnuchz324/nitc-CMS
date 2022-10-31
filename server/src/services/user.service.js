@@ -1,20 +1,6 @@
 import { prisma } from "./database.service.js";
+import { ROLES } from "./enums/auth.enum.js";
 import profileService from "./profile.service.js";
-
-/**
- * Gets a user from email
- * @param {object} - loginData containing the email and password
- * @returns {object} - the user and profile data
- */
-const getUser = async (loginData) => {
-	try {
-		let profile = await profileService.getProfileFromData(loginData);
-		let user = profile.user;
-		return user;
-	} catch (err) {
-		throw err;
-	}
-};
 
 const getUserById = async (userId) => {
 	try {
@@ -51,4 +37,4 @@ const createUser = async (profileData) => {
 		throw err;
 	}
 };
-export default { getUser, getUserById, createUser };
+export default { getUserById, createUser };

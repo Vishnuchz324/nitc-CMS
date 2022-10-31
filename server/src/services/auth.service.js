@@ -1,6 +1,6 @@
-import { prisma } from "./database.service.js";
 import { ROLES } from "./enums/auth.enum.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { HttStatusMessage } from "./enums/errors.enum.js";
 import userService from "./user.service.js";
 
@@ -32,6 +32,16 @@ const verifyAccesToken = (token) => {
 	return [err, user];
 };
 
+const generateHashedPassword = async (password) => {
+	const hashedPassword = await bcrypt.hash(password, 10);
+	return hashedPassword;
+};
+
+const validateHashedPassword = async (password, hashedPassword) => {
+	const isValid = await bcrypt.compare(password, hashedPassword);
+	return isValid;
+};
+
 /**
  * Creates a new user
  * @param {object} - profileData the profile data sent by the client
@@ -48,6 +58,7 @@ const createUser = async (profileData) => {
 		errors.push(HttStatusMessage.MISSING_PARAMTER("department"));
 	if (errors.length === 0)
 		try {
+			profileData.password = await generateHashedPassword(profileData.password);
 			user = userService.createUser(profileData);
 			delete user.password;
 		} catch (err) {
@@ -56,4 +67,15 @@ const createUser = async (profileData) => {
 	return [user, errors];
 };
 
-export default { createUser, generateAccesToken, verifyAccesToken };
+const validateProfile = async (user, password) => {
+	const hashedPassword = user.password;
+	const isValid = await validateHashedPassword(hashedPassword, password);
+	return isValid;
+};
+
+export default {
+	generateAccesToken,
+	verifyAccesToken,
+	validateProfile,
+	createUser,
+};

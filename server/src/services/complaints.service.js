@@ -183,33 +183,43 @@ const createComplaint = async (complaintData, user) => {
  * @param {object} complaintData complaint data from the client
  * @returns  {object} - complaint
  */
-const updateComplaint = async (complaintId, userId, complaintData) => {
+const updateComplaint = async (complaintId, user, complaintData) => {
 	let errors = [];
-	let complaint = await getComplaintById(complaintId);
-	if (!complaint) errors.push(HttStatusMessage.INVALID_COMPLAINT);
-	else if (complaint.userId !== userId)
-		if (user.role !== ROLES.REVIEWER && user.role !== ROLES.ADMIN)
-			errors.push(HttStatusMessage.NO_PERMISSION);
-	if (errors.length === 0) {
-		try {
+	let complaint = {};
+	try {
+		// check if the complaint with the given id exists
+		let complaintById = await getComplaintById(complaintId);
+		if (!complaintById) errors.push(HttStatusMessage.INVALID_COMPLAINT);
+		else {
+			// checks if the user has permission to acces the complaint
+			if (complaintById.userId !== user.id)
+				if (user.role !== ROLES.REVIEWER && user.role !== ROLES.ADMIN)
+					errors.push(HttStatusMessage.NO_PERMISSION);
+
+			// checks if another complaint xists with the same title
 			if (complaintData.title) {
-				complaint = await getComplaintByTitle(complaintData.title);
-				if (complaint) errors.push(HttStatusMessage.COMPLAINT_EXISTS);
-				else {
-					complaint = await prisma.complaint.update({
-						where: {
-							id: complaintId,
-						},
-						data: {
-							title: complaintData.title,
-							description: complaintData.description,
-						},
-					});
-				}
+				let complaintWithTitle = await getComplaintByTitle(complaintData.title);
+				if (complaintWithTitle) errors.push(HttStatusMessage.COMPLAINT_EXISTS);
 			}
-		} catch (err) {
-			throw err;
+
+			complaintData.title = complaintData.title || complaintById.title;
+			complaintData.description =
+				complaintData.description || complaintById.description;
 		}
+
+		if (errors.length === 0) {
+			complaint = await prisma.complaint.update({
+				where: {
+					id: complaintId,
+				},
+				data: {
+					title: complaintData.title,
+					description: complaintData.description,
+				},
+			});
+		}
+	} catch (err) {
+		throw err;
 	}
 	return [errors, complaint];
 };

@@ -6,6 +6,7 @@ import {
 	HttpStatusCodes,
 	HttStatusMessage,
 } from "../services/enums/errors.enum.js";
+import { ROLES } from "../services/enums/auth.enum.js";
 
 /**
  * User Signin
@@ -14,11 +15,15 @@ import {
 const signIn = async (req, res) => {
 	try {
 		const loginData = req.loginData;
-		const profile = await userService.getUser(loginData);
+		const profile = await profileService.getProfileFromData(loginData);
 		if (profile) {
-			profile.token = authService.generateAccesToken(profile);
-			res.status(HttpStatusCodes.OK).send(profile);
-			console.log(profile);
+			if (!authService.validateProfile(profile, loginData.password)) {
+				res
+					.status(HttpStatusCodes.BAD_REQUEST)
+					.send({ message: HttStatusMessage.INVALID_CREDENTIALS });
+			}
+			const accesToken = authService.generateAccesToken(profile);
+			res.status(HttpStatusCodes.OK).send({ accessToken: accesToken });
 		} else {
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
@@ -50,12 +55,12 @@ const signUp = async (req, res) => {
 
 		// create s anew user in the database
 		const [profile, errors] = await authService.createUser(profileData);
+
 		if (errors.length !== 0) {
 			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
 		}
 		// generates an access token
 		profile.token = authService.generateAccesToken(profile);
-		console.log(`created profile ${profile.name}`);
 		res.status(HttpStatusCodes.CREATED).send(profile);
 	} catch (err) {
 		console.log(err);
