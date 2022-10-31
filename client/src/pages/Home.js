@@ -3,7 +3,7 @@ import * as React from "react";
 import { Dashboard } from "./Dashboard";
 import { Members } from "./Members";
 import { Navbar } from "../components/Navbar";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 export const Home = () => {
 	return (

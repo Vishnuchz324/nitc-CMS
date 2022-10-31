@@ -4,7 +4,9 @@ import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
+import { DataGrid } from '@mui/x-data-grid';
+
+// import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -13,6 +15,55 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 const drawerWidth = 240;
+
+const columns = [
+	{ field: 'id', headerName: 'ID', width: 90 },
+	{
+	  field: 'firstName',
+	  headerName: 'First name',
+	  width: 150,
+	  editable: true,
+	},
+	{
+	  field: 'lastName',
+	  headerName: 'Last name',
+	  width: 150,
+	  editable: true,
+	},
+	{
+	  field: 'age',
+	  headerName: 'Age',
+	  type: 'number',
+	  width: 90,
+	  editable: true,
+	},
+	{
+	  field: 'fullName',
+	  headerName: 'Full name',
+	  description: 'This column has a value getter and is not sortable.',
+	  sortable: false,
+	  width: 160,
+	  valueGetter: (params) =>
+		`${params.getValue(params.id, 'firstName') || ''} ${
+		  params.getValue(params.id, 'lastName') || ''
+		}`,
+	},
+  ];
+  
+  const rows = [
+	{ id: 1, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 2, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 3, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 4, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 5, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 6, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 7, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 8, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 9, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	{ id: 10, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+  ];
+  
+
 
 export const Dashboard = () => {
 	return (
@@ -57,39 +108,30 @@ export const Dashboard = () => {
 						))}
 					</List>
 				</Box>
+
 			</Drawer>
-			<Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+			<div style={{ height: 500 , width: 750 }}>
+       		<div style={{ display: 'flex', height: '100%' }}>
+			<Box component='main' sx={{ flexGrow: 1, p: 3 ,width: 'auto'}}>
+				
 				<Toolbar />
-				<Typography paragraph>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-					eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-					dolor purus non enim praesent elementum facilisis leo vel. Risus at
-					ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-					quisque non tellus. Convallis convallis tellus id interdum velit
-					laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-					adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-					integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-					eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-					quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-					vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-					lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-					faucibus et molestie ac.
-				</Typography>
-				<Typography paragraph>
-					Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-					ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-					elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-					sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-					mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-					risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-					purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-					tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-					morbi tristique senectus et. Adipiscing elit duis tristique
-					sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-					eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-					posuere sollicitudin aliquam ultrices sagittis orci a.
-				</Typography>
+				
+				<DataGrid
+				rows={rows}
+				columns={columns}
+				pageSize={5}
+				rowsPerPageOptions={[5]}
+				checkboxSelection
+				/>
+				
+			
+				
 			</Box>
+			</div>
+			</div>
+		
 		</Box>
+		
+		
 	);
 };
