@@ -34,10 +34,11 @@ export const Navbar = () => {
 			sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
 		>
 			<Toolbar>
-				<Typography variant='h6'>News</Typography>
-
-				<Link to='/'> Home</Link>
-				<Link to='/members'> Members</Link>
+			
+				<Typography variant='h6' >News  &ensp;</Typography>
+				
+				<Link to='/'>   &ensp; Home   &ensp;</Link>
+				<Link to='/members'>  &ensp;  Members </Link>
 			</Toolbar>
 		</AppBar>
 	);
