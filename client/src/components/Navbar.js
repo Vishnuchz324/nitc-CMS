@@ -3,6 +3,7 @@ import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 import Toolbar from "@mui/material/Toolbar";
 import { Link } from "react-router-dom";
+
 // import { makeStyles } from "@mui/styles";
 
 // const useStyles = makeStyles((theme) => ({
@@ -39,6 +40,8 @@ export const Navbar = () => {
 				
 				<Link to='/'>   &ensp; Home   &ensp;</Link>
 				<Link to='/members'>  &ensp;  Members </Link>
+				
+
 			</Toolbar>
 		</AppBar>
 	);
