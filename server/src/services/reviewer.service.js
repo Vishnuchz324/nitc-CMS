@@ -41,11 +41,31 @@ const createReviewer = async (userId) => {
 
 const getAllReviewers = async () => {
 	try {
-		const reviewers = await prisma.reviewer.findMany({
-			include: {
-				user: true,
+		let reviewers = await prisma.reviewer.findMany({
+			select: {
+				id: true,
+				user: {
+					select: {
+						department: true,
+						rollNo: true,
+						profile: {
+							select: {
+								name: true,
+								email: true,
+								contact: true,
+							},
+						},
+					},
+				},
 				Validated: true,
 			},
+		});
+		reviewers = reviewers.map((reviewer) => {
+			const user = reviewer.user;
+			const profile = reviewer.user.profile;
+			delete user.profile;
+			delete reviewer.user;
+			return { ...reviewer, ...user, ...profile };
 		});
 		return reviewers;
 	} catch (err) {
@@ -54,8 +74,8 @@ const getAllReviewers = async () => {
 };
 
 export default {
+	getReviewerById,
+	getAllReviewers,
 	getReviewerUser,
 	createReviewer,
-	getAllReviewers,
-	getReviewerById,
 };

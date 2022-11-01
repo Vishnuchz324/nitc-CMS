@@ -1,6 +1,9 @@
 import express from "express";
 import adminController from "../controllers/admin.controller.js";
-import { verifyAdmin } from "../middleware/auth.middleware.js";
+import {
+	verifyAdmin,
+	verifyReviewerOrAdmin,
+} from "../middleware/auth.middleware.js";
 import {
 	validateQuery,
 	validator,
@@ -12,25 +15,28 @@ import {
 const router = express.Router();
 
 /**
- * Route registering a reviewer.
- * @name get/reviewer
+ * Fetch all the admins.
+ * @name get/
  * verifyAdmin - ensure proper autherization and extracts the admin route
- * getAllReviewers - gets all the reviewers
+ * getAllAdmins - gets all the admins
  */
-router.get("/reviewer", verifyAdmin, adminController.getAllReviewers);
+router.get("/", verifyAdmin, adminController.getAllAdmins);
 
 /**
- * Route registering a admin.
- * @name post/register
- * validate - validate the data with the provided constraints
- * verifyAdmin - ensure proper autherization and extracts the admin route
- * createReviewer - creates a new reviewer
+ * Fetch all the users.
+ * @name get/users
+ * verifyAdmin- ensure proper autherization and extracts the admin route
+ * getALlUsers - gets all the users
  */
-router.post(
-	"/reviewer",
-	validator([validateQuery("userId").exists().toInt().isNumeric()]),
-	verifyAdmin
-);
+router.get("/users", verifyAdmin, adminController.getAllUsers);
+
+/**
+ * Fetch all the assigned complaints
+ * @name get/assigned
+ * verifyAdmin - ensure proper autherization and extracts the admin route
+ * getALlUsers - gets all the users
+ */
+router.get("/assigned", verifyAdmin, adminController.getAssignedComplaints);
 
 /**
  * Route registering a reviewer.

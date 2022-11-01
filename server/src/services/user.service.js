@@ -15,6 +15,47 @@ const getUserById = async (userId) => {
 	}
 };
 
+const getUserFromProfile = async (profileId) => {
+	try {
+		let user = await prisma.user.findUnique({
+			where: {
+				profileId: profileId,
+			},
+		});
+		return user;
+	} catch (err) {
+		throw err;
+	}
+};
+
+const getAllUsers = async () => {
+	try {
+		let users = await prisma.user.findMany({
+			select: {
+				id: true,
+				department: true,
+				rollNo: true,
+				profile: {
+					select: {
+						name: true,
+						email: true,
+						role: true,
+					},
+				},
+			},
+		});
+
+		users = users.map((user) => {
+			let profile = user.profile;
+			delete user.profile;
+			return { ...user, ...profile };
+		});
+		return users;
+	} catch (err) {
+		throw err;
+	}
+};
+
 const createUser = async (profileData) => {
 	try {
 		const user = await prisma.user.create({
@@ -37,4 +78,4 @@ const createUser = async (profileData) => {
 		throw err;
 	}
 };
-export default { getUserById, createUser };
+export default { getUserById, getUserFromProfile, createUser, getAllUsers };

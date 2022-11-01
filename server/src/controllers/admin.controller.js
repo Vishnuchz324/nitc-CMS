@@ -5,7 +5,35 @@ import {
 	HttpStatusCodes,
 	HttStatusMessage,
 } from "../services/enums/errors.enum.js";
-import reviewerService from "../services/reviewer.service.js";
+import validateService from "../services/validate.service.js";
+
+const getAllAdmins = async (req, res) => {
+	try {
+		const admins = await adminService.getAllAdmins();
+		res.status(HttpStatusCodes.OK).send(admins);
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+const getAllUsers = async (req, res) => {
+	try {
+		const users = await userService.getAllUsers();
+		res.status(HttpStatusCodes.OK).send(users);
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+const getAssignedComplaints = async (req, res) => {
+	try {
+		const adminId = req.user.id;
+		const assignedComplaints = await validateService.getAssignedComplaints(
+			adminId
+		);
+		res.status(HttpStatusCodes.OK).send(assignedComplaints);
+	} catch (err) {}
+};
 
 const createReviewer = async (req, res) => {
 	try {
@@ -27,16 +55,9 @@ const createReviewer = async (req, res) => {
 	}
 };
 
-const getAllReviewers = async (req, res) => {
-	try {
-		const reviewers = await reviewerService.getAllReviewers();
-		res.status(HttpStatusCodes.OK).send(reviewers);
-	} catch (err) {
-		console.log(err);
-	}
-};
-
 export default {
+	getAllUsers,
+	getAllAdmins,
+	getAssignedComplaints,
 	createReviewer,
-	getAllReviewers,
 };

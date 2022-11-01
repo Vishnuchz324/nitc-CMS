@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { HttStatusMessage } from "./enums/errors.enum.js";
 import userService from "./user.service.js";
+import reviewerService from "./reviewer.service.js";
 
 /**
  * Generates an acces token
@@ -10,10 +11,7 @@ import userService from "./user.service.js";
  * @returns {string} - the encrypted access token
  */
 const generateAccesToken = (tokenData) => {
-	return jwt.sign(
-		{ id: tokenData.id, email: tokenData.email, role: tokenData.role },
-		process.env.JWT_SECRET
-	);
+	return jwt.sign(tokenData, process.env.JWT_SECRET);
 };
 
 /**
@@ -34,7 +32,6 @@ const verifyAccesToken = (token) => {
 
 const generateHashedPassword = async (password) => {
 	const hashedPassword = await bcrypt.hash(password, 10);
-	const isValid = await bcrypt.compare(password, hashedPassword);
 	return hashedPassword;
 };
 
@@ -74,9 +71,33 @@ const validateProfile = async (user, password) => {
 	return isValid;
 };
 
+const generateTokenData = async (profile) => {
+	const profileId = profile.id;
+	const role = profile.role;
+	let id;
+	if (role === ROLES.ADMIN) id = profile.Admin.id;
+	else {
+		const userId = profile.User.id;
+		if (role === ROLES.USER) id = userId;
+		else {
+			const reviewer = await reviewerService.getReviewerUser(userId);
+			id = reviewer.id;
+		}
+	}
+	let tokenData = {
+		id: id,
+		profileId: profileId,
+		email: profile.email,
+		role: profile.role,
+	};
+	console.log(tokenData);
+	return tokenData;
+};
+
 export default {
 	generateAccesToken,
 	verifyAccesToken,
+	generateTokenData,
 	validateProfile,
 	createUser,
 };

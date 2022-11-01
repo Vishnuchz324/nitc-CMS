@@ -24,4 +24,5 @@ export const HttStatusMessage = {
 	INVALID_COMPLAINT: "invalid complaint id",
 	INVALID_USER: "user doesnot exists",
 	INVALID_CREDENTIALS: "invalid credentials",
+	INVALID_ADMIN: "invalid admin",
 };

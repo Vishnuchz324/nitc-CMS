@@ -6,7 +6,10 @@ import {
 } from "../middleware/validator.middleware.js";
 import complaintController from "../controllers/complaint.controller.js";
 import { getComplaintFromBody } from "../middleware/complaints.middleware.js";
-import { verifyUser } from "../middleware/auth.middleware.js";
+import {
+	verifyReviewerOrAdmin,
+	verifyUser,
+} from "../middleware/auth.middleware.js";
 
 /**
  * @namespace complaintRouter
@@ -77,4 +80,10 @@ router.put(
 	complaintController.upVoteComplaint
 );
 
+router.delete(
+	"/:complaintId",
+	validator([validateQuery("complaintId").exists().toInt().isNumeric()]),
+	verifyReviewerOrAdmin,
+	complaintController.deleteComplaint
+);
 export default router;

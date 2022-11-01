@@ -97,10 +97,21 @@ const upVoteComplaint = async (req, res) => {
 	}
 };
 
+const deleteComplaint = async (req, res) => {
+	try {
+		const complaintId = parseInt(req.params.complaintId);
+		const complaint = await complaintService.removeComplaint(complaintId);
+		res.status(HttpStatusCodes.OK).send(complaint);
+	} catch (err) {
+		console.log(err);
+	}
+};
+
 export default {
 	registerComplaint,
 	getAllComplaints,
 	getRegisteredComplaints,
 	updateComplaint,
 	upVoteComplaint,
+	deleteComplaint,
 };

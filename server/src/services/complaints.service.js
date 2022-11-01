@@ -2,6 +2,7 @@ import { prisma } from "./database.service.js";
 import { ROLES } from "./enums/auth.enum.js";
 import { COMPLAINT_STATUS } from "./enums/complaint.enum.js";
 import { HttStatusMessage } from "./enums/errors.enum.js";
+import validateService from "./validate.service.js";
 
 /**
  * Returns the complaint with the given id
@@ -94,7 +95,7 @@ const getAllComplaints = async (userId) => {
 			},
 		},
 	});
-	complaints.map((complaint) => {
+	complaints = complaints.map((complaint) => {
 		const numVotes = complaint._count.upvotedBy;
 		const upVotedUsers = complaint.upvotedBy;
 		let upvoted = false;
@@ -102,7 +103,6 @@ const getAllComplaints = async (userId) => {
 		upVotedUsers.map((user) => {
 			if (user.id === userId) upvoted = true;
 		});
-
 		complaint.numVotes = numVotes;
 		complaint.upvoted = upvoted;
 
@@ -176,6 +176,20 @@ const createComplaint = async (complaintData, user) => {
 	return [errors, complaint];
 };
 
+const removeComplaint = async (complaintId) => {
+	try {
+		await validateService.removeFromValidation(complaintId);
+		const complaint = await prisma.complaint.delete({
+			where: {
+				id: complaintId,
+			},
+		});
+		return complaint;
+	} catch (err) {
+		throw err;
+	}
+};
+
 /**
  * Returns all the registered complaints
  * @param {number} complaintId - the id of the complaint to be modified
@@ -224,6 +238,18 @@ const updateComplaint = async (complaintId, user, complaintData) => {
 	return [errors, complaint];
 };
 
+const updateComplaintStatus = async (complaintId, status) => {
+	const complaint = await prisma.complaint.update({
+		where: {
+			id: complaintId,
+		},
+		data: {
+			status: status,
+		},
+	});
+	return complaint;
+};
+
 const upVoteComplaint = async (complaintId, userId) => {
 	let errors = [];
 	let complaint = {};
@@ -253,9 +279,12 @@ const upVoteComplaint = async (complaintId, userId) => {
 };
 
 export default {
-	createComplaint,
-	getAllComplaints,
+	getComplaintById,
 	getComplaintByUser,
+	getAllComplaints,
+	createComplaint,
+	removeComplaint,
 	updateComplaint,
+	updateComplaintStatus,
 	upVoteComplaint,
 };

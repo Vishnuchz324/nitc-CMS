@@ -31,7 +31,34 @@ const getAdminById = async (adminId) => {
 	}
 };
 
+const getAdminFromProfile = async (profileId) => {
+	try {
+		const admin = await prisma.admin.findUnique({
+			where: {
+				profileId: profileId,
+			},
+		});
+	} catch (err) {
+		throw err;
+	}
+};
+
+const getAllAdmins = async () => {
+	try {
+		let admins = await prisma.admin.findMany({
+			select: {
+				id: true,
+				designation: true,
+			},
+		});
+		return admins;
+	} catch (err) {
+		throw err;
+	}
+};
 export default {
-	createReviewer,
 	getAdminById,
+	getAdminFromProfile,
+	getAllAdmins,
+	createReviewer,
 };

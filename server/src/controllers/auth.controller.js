@@ -26,11 +26,8 @@ const signIn = async (req, res) => {
 					.status(HttpStatusCodes.BAD_REQUEST)
 					.send({ message: HttStatusMessage.INVALID_CREDENTIALS });
 			}
-			const tokenData = {
-				id: profile.role === ROLES.ADMIN ? profile.Admin.id : profile.User.id,
-				email: profile.email,
-				role: profile.role,
-			};
+
+			const tokenData = await authService.generateTokenData(profile);
 			const accesToken = authService.generateAccesToken(tokenData);
 			res.status(HttpStatusCodes.OK).send({ accessToken: accesToken });
 		} else {
@@ -69,7 +66,9 @@ const signUp = async (req, res) => {
 			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
 		}
 		// generates an access token
-		profile.token = authService.generateAccesToken(profile);
+		const tokenData = await authService.generateTokenData(profile);
+		const accesToken = authService.generateAccesToken(tokenData);
+		profile.token = accesToken;
 		res.status(HttpStatusCodes.CREATED).send(profile);
 	} catch (err) {
 		console.log(err);
