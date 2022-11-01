@@ -17,12 +17,21 @@ const signIn = async (req, res) => {
 		const loginData = req.loginData;
 		const profile = await profileService.getProfileFromData(loginData);
 		if (profile) {
-			if (!authService.validateProfile(profile, loginData.password)) {
+			const isValid = await authService.validateProfile(
+				profile,
+				loginData.password
+			);
+			if (!isValid) {
 				res
 					.status(HttpStatusCodes.BAD_REQUEST)
 					.send({ message: HttStatusMessage.INVALID_CREDENTIALS });
 			}
-			const accesToken = authService.generateAccesToken(profile);
+			const tokenData = {
+				id: profile.role === ROLES.ADMIN ? profile.Admin.id : profile.User.id,
+				email: profile.email,
+				role: profile.role,
+			};
+			const accesToken = authService.generateAccesToken(tokenData);
 			res.status(HttpStatusCodes.OK).send({ accessToken: accesToken });
 		} else {
 			res
@@ -48,7 +57,7 @@ const signUp = async (req, res) => {
 				.send({ message: HttStatusMessage.EMAIL_EXISTS });
 
 		// check if the contact number is already registered
-		if (await profileService.isContactExists(profileData.contact))
+		if (awaitprofileService.isContactExists(profileData.contact))
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
 				.send({ message: HttStatusMessage.CONTACT_EXISTS });

@@ -7,7 +7,10 @@ const createReviewer = async (userId, profileId) => {
 		const existingReviewer = await reviewerService.getReviewerUser(userId);
 		if (!existingReviewer) {
 			const reviewer = reviewerService.createReviewer(userId);
-			await profileService.updateProfileRole(profileId, "REVIEWER");
+			const profile = await profileService.updateProfileRole(
+				profileId,
+				"REVIEWER"
+			);
 			return reviewer;
 		} else return existingReviewer;
 	} catch (err) {
@@ -15,6 +18,20 @@ const createReviewer = async (userId, profileId) => {
 	}
 };
 
+const getAdminById = async (adminId) => {
+	try {
+		let admin = await prisma.admin.findUnique({
+			where: {
+				id: adminId,
+			},
+		});
+		return admin;
+	} catch (err) {
+		throw err;
+	}
+};
+
 export default {
 	createReviewer,
+	getAdminById,
 };

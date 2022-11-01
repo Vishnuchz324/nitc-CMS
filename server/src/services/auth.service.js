@@ -1,6 +1,6 @@
 import { ROLES } from "./enums/auth.enum.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import { HttStatusMessage } from "./enums/errors.enum.js";
 import userService from "./user.service.js";
 
@@ -9,9 +9,9 @@ import userService from "./user.service.js";
  * @param {object} profiledata -the profile data send by the client
  * @returns {string} - the encrypted access token
  */
-const generateAccesToken = (profileData) => {
+const generateAccesToken = (tokenData) => {
 	return jwt.sign(
-		{ id: profileData.id, email: profileData.email, role: profileData.role },
+		{ id: tokenData.id, email: tokenData.email, role: tokenData.role },
 		process.env.JWT_SECRET
 	);
 };
@@ -34,6 +34,7 @@ const verifyAccesToken = (token) => {
 
 const generateHashedPassword = async (password) => {
 	const hashedPassword = await bcrypt.hash(password, 10);
+	const isValid = await bcrypt.compare(password, hashedPassword);
 	return hashedPassword;
 };
 
@@ -69,7 +70,7 @@ const createUser = async (profileData) => {
 
 const validateProfile = async (user, password) => {
 	const hashedPassword = user.password;
-	const isValid = await validateHashedPassword(hashedPassword, password);
+	const isValid = await validateHashedPassword(password, hashedPassword);
 	return isValid;
 };
 

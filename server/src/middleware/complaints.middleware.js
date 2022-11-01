@@ -14,7 +14,6 @@ const getComplaintFromBody = (req, res, next) => {
 			status: COMPLAINT_STATUS.NOT_VERIFIED,
 		};
 		req.complaint = complaint;
-		console.log(req.complaint);
 		next();
 	} catch (err) {
 		req.status(HttpStatusCodes.SERVER_FAILURE).send({ message: err.message });

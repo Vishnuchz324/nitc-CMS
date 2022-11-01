@@ -39,6 +39,7 @@ const isContactExists = async (contact) => {
 };
 
 const updateProfileRole = async (profileId, role) => {
+	console.log(profileId, role);
 	try {
 		let profile = await prisma.profile.update({
 			where: {
@@ -48,6 +49,7 @@ const updateProfileRole = async (profileId, role) => {
 				role: role,
 			},
 		});
+
 		return profile;
 	} catch (err) {
 		throw err;

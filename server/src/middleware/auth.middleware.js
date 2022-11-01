@@ -1,9 +1,11 @@
+import adminService from "../services/admin.service.js";
 import authService from "../services/auth.service.js";
 import { ROLES } from "../services/enums/auth.enum.js";
 import {
 	HttpStatusCodes,
 	HttStatusMessage,
 } from "../services/enums/errors.enum.js";
+import profileService from "../services/profile.service.js";
 import userService from "../services/user.service.js";
 
 /**
@@ -62,8 +64,14 @@ const verifyUser = async (req, res, next) => {
 				.status(HttpStatusCodes.ACCES_FORBIDDEN)
 				.send({ message: HttStatusMessage.INVALID_TOKEN });
 		else {
-			const isUserExists = await userService.getUserById(parseInt(data.id));
-			if (!isUserExists)
+			const role = data.role;
+			let isValidProfile = false;
+
+			if (role === ROLES.ADMIN)
+				isValidProfile = await adminService.getAdminById(parseInt(data.id));
+			else isValidProfile = await userService.getUserById(parseInt(data.id));
+
+			if (!isValidProfile)
 				res
 					.status(HttpStatusCodes.UNAUTHORIZED)
 					.send({ message: HttStatusMessage.INVALID_USER });
