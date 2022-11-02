@@ -40,7 +40,8 @@ export const Navbar = () => {
 				
 				<Link to='/'>   &ensp; Home   &ensp;</Link>
 				<Link to='/members'>  &ensp;  Members </Link>
-				
+				<Link to='/contact'>  &ensp;  Contact </Link>
+				<Link to='/signup'>  &ensp;  SignInOutContainer </Link>
 
 			</Toolbar>
 		</AppBar>

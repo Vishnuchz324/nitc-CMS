@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Login from '/login'
-import Signup from '/signup' 
-const SignInOutContainer=()=>{
+import { Tab,Paper,  Tabs,Box, Typography} from '@mui/material'
+
+import Login from "./login";
+import Signup from "./signup";
+export const SignInOutContainer=()=>{
 const [value,setValue]=useState(0)
 const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const paperStyle={width:340,margin:"20px auto"}
+  const paperStyle={width:340,margin:"80px auto"}
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -32,6 +29,7 @@ const handleChange = (event, newValue) => {
       </div>
     );
   }
+  
   
     return (
         <Paper elevation={20} style={paperStyle}>
@@ -55,6 +53,5 @@ const handleChange = (event, newValue) => {
       </Paper>
       
     )
-}
+};
 
-export default SignInOutContainer
