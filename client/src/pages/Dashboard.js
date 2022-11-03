@@ -15,6 +15,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Complaint } from "../components/complaint-register";
+import { Validate } from "../components/validate";
 
 
 
@@ -180,8 +181,16 @@ export const Dashboard = () => {
 				</div>
 			
 			<Complaint/>
+            
+			<br>
+			</br>
+			///
+			<Validate/>
+			
 				
 			</Box>
+
+			
 			</div>
 			</div>
 		
