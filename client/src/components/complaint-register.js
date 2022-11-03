@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import { Grid, TextField, Button, Card, CardContent } from '@mui/material'
 
-import LockIcon from '@mui/icons-material/Lock';
 export const Complaint=({handleChange})=>{
 
     const btnstyle={margin:'8px 0'}
     return(
-            <Card style={{margin:"0 auto"}}>
+            <Card style={{margin:"0 auto", border:"solid 1px"}}>
                 <CardContent>
                     <Grid align="center">
                         <h2>Register Complaint</h2>
