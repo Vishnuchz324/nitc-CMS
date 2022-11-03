@@ -1,10 +1,17 @@
 import * as React from "react";
-import { Box ,Button} from "@mui/material";
+import { Box ,Button,IconButton,Checkbox, FormControlLabel} from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import { DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import { blue} from '@mui/material/colors';
+import ForwardIcon from '@mui/icons-material/Forward';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
 
 // import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -20,6 +27,19 @@ import { Complaint } from "../components/complaint-register";
 
 const drawerWidth = 240;
 
+const handleEditClick = () => {
+	// some action
+}
+const handleForwardClick = () => {
+	// some action
+}
+const handleDelClick = () => {
+	// some action
+}
+const handleAssignClick = () => {
+	// some action
+}
+
 const columns = [
 	{ field: 'id', headerName: 'ID', width: 80 },
 	{
@@ -31,7 +51,7 @@ const columns = [
 	{
 	  field: 'description',
 	  headerName: 'Description',
-	  width: 300,
+	  width: 250,
 	  editable: true,
 	},
 	{
@@ -40,6 +60,17 @@ const columns = [
 	  type: 'number',
 	  width: 140,
 	  editable: true,
+	  renderCell: (cellValues) => {
+		return (
+		<FormControlLabel
+		control={<Checkbox icon={<FavoriteBorder />} 
+					checkedIcon={<Favorite />}
+			name="checkedH" />}
+		label="votes"
+		// Vishnu- Daa ivide ee votes inte stalath numvotes akan patuvo??
+		/>
+		);
+	  }
 	},
 	{
 		field: 'reg_at',
@@ -47,23 +78,31 @@ const columns = [
 		width: 140,
 		editable: true,
 	  },
+
 	  {
 		field: 'edit',
 		headerName: 'Edit',
 		type: 'button',
-		width: 88,
+		width: 158,
 		editable: true,
 		renderCell: (cellValues) => {
 			return (
-			  <Button
-				variant="contained"
-				color="info"
-				onClick={(event) => {
-				 
-				}}
-			  >
-				Edit🖊
-			  </Button>
+				<div>
+				<IconButton color="secondary"  aria-label="add an alarm" onClick={handleEditClick} >
+				<EditIcon fontSize="small" style={{ color: blue[500] ,size:"small"}} />
+				</IconButton>
+				<IconButton color="secondary" size="small" aria-label="add an alarm" onClick={handleForwardClick} >
+				<ForwardIcon fontSize="small" style={{ color: blue[500] }} />
+				</IconButton>
+				<IconButton color="secondary" aria-label="add an alarm" onClick={handleDelClick} >
+				<DeleteIcon fontSize="small" style={{ color: blue[500] }} />
+				</IconButton>
+				<IconButton color="secondary" aria-label="add an alarm" onClick={handleAssignClick} >
+				<AssignmentIndIcon fontSize="small" style={{ color: blue[500] }} />
+				</IconButton>
+
+		</div>
+
 			);
 		  }
 	  },
@@ -129,7 +168,7 @@ export const Dashboard = () => {
 				</Box>
 
 			</Drawer>
-			<div style={{ height: 500 , width: 1100, alignContent:'center',paddingLeft:100, }}>
+			<div style={{ height: 500 , width: 1120, alignContent:'center',paddingLeft:100, }}>
        		<div style={{ display: 'flex', height: '100%' }}>
 			<Box component='main' sx={{ flexGrow: 1, p: 3 ,width: 'auto'}}>
 				
