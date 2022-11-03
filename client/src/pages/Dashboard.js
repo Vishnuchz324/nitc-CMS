@@ -14,7 +14,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-
+import { Complaint } from "../components/complaint-register";
 
 
 
@@ -178,8 +178,8 @@ export const Dashboard = () => {
 				/>
 				</div>
 				</div>
-				
 			
+			<Complaint/>
 				
 			</Box>
 			</div>
