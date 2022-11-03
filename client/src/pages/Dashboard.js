@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box } from "@mui/material";
+import { Box ,Button} from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
@@ -21,55 +21,70 @@ import MailIcon from "@mui/icons-material/Mail";
 const drawerWidth = 240;
 
 const columns = [
-	{ field: 'id', headerName: 'ID', width: 90 },
+	{ field: 'id', headerName: 'ID', width: 80 },
 	{
-	  field: 'firstName',
-	  headerName: 'First name',
-	  width: 150,
+	  field: 'title',
+	  headerName: 'Title',
+	  width: 200,
 	  editable: true,
 	},
 	{
-	  field: 'lastName',
-	  headerName: 'Last name',
-	  width: 150,
+	  field: 'description',
+	  headerName: 'Description',
+	  width: 300,
 	  editable: true,
 	},
 	{
-	  field: 'age',
-	  headerName: 'Age',
+	  field: 'numvotes',
+	  headerName: 'Num-Votes',
 	  type: 'number',
-	  width: 90,
+	  width: 140,
 	  editable: true,
 	},
 	{
-	  field: 'fullName',
-	  headerName: 'Full name',
-	  description: 'This column has a value getter and is not sortable.',
-	  sortable: false,
-	  width: 160,
-	  valueGetter: (params) =>
-		`${params.getValue(params.id, 'firstName') || ''} ${
-		  params.getValue(params.id, 'lastName') || ''
-		}`,
-	},
+		field: 'reg_at',
+		headerName: 'Registered At',
+		width: 140,
+		editable: true,
+	  },
+	  {
+		field: 'edit',
+		headerName: 'Edit',
+		type: 'button',
+		width: 88,
+		editable: true,
+		renderCell: (cellValues) => {
+			return (
+			  <Button
+				variant="contained"
+				color="info"
+				onClick={(event) => {
+				 
+				}}
+			  >
+				Edit🖊
+			  </Button>
+			);
+		  }
+	  },
+	
+	
   ];
   
   const rows = [
-	{ id: 1, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 2, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 3, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 4, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 5, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 6, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 7, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 8, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 9, lastName: 'Faisal', firstName: 'Shada', age: 21 },
-	{ id: 10, lastName: 'Faisal', firstName: 'Shada', age: 21 },
+	// needs to add data in this form!!!!
+	{ id: 1, title: 'Laptop Lost', description: 'I lost my laptop from E hostel', numvotes: 2, reg_at:"Online", },
+	{ id: 2, title: 'Laptop Lost', description: 'I lost my laptop from E hostel', numvotes: 2, reg_at:"Online", },
+	{ id: 3, title: 'Laptop Lost', description: 'I lost my laptop from E hostel', numvotes: 2, reg_at:"Online", },
+	{ id: 4, title: 'Laptop Lost', description: 'I lost my laptop from E hostel', numvotes: 2, reg_at:"Online", },
+	{ id: 5, title: 'Laptop Lost', description: 'I lost my laptop from E hostel', numvotes: 2, reg_at:"Online", },
+	{ id: 6, title: 'Laptop Lost', description: 'I lost my laptop from E hostel', numvotes: 2, reg_at:"Online", },
   ];
   
 
 
 export const Dashboard = () => {
+	
 	return (
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
@@ -114,19 +129,55 @@ export const Dashboard = () => {
 				</Box>
 
 			</Drawer>
-			<div style={{ height: 500 , width: 750 }}>
+			<div style={{ height: 500 , width: 1100, alignContent:'center',paddingLeft:100, }}>
        		<div style={{ display: 'flex', height: '100%' }}>
 			<Box component='main' sx={{ flexGrow: 1, p: 3 ,width: 'auto'}}>
 				
 				<Toolbar />
-				
+				<div style={{ display: 'flex', height: '100%' }}>
+  				<div style={{ flexGrow: 1 }}>
 				<DataGrid
 				rows={rows}
 				columns={columns}
-				pageSize={5}
-				rowsPerPageOptions={[5]}
-				checkboxSelection
+				pageSize={6}
+				rowsPerPageOptions={[6]}
+				
+
+				componentsProps={{
+					columnMenu: { background: 'red', counter: rows.length },
+				  }}
+
+				  sx={{
+					boxShadow: 2,
+					border: 2,
+					borderColor: 'primary.lightblack',
+					'& .MuiDataGrid-cell:hover': {
+					  color: 'primary.main',
+					},
+					'& .MuiDataGrid-columnHeader': {
+						border: "2px groove black"
+					  },
+					'& .MuiDataGrid-row': {
+						backgroundColor: 'rgba(215, 215, 235, .7)',
+						// border: "1px solid black"
+					  },
+					  "& .MuiDataGrid-columnHeaders": {
+						backgroundColor: 'rgba(235, 235, 235, .7)',
+						color: "rgba(0,0,0,0.99)",
+						fontSize: 16,
+						
+						// border: "2px solid black"
+					  },
+					  '& .MuiDataGrid-cell': {
+						// backgroundColor: 'rgba(215, 215, 235, .7)',
+						border: "2px groove grey"
+					  },
+
+					
+				  }}
 				/>
+				</div>
+				</div>
 				
 			
 				
