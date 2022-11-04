@@ -25,6 +25,8 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Complaint } from "../components/complaint-register";
+import { AssignWorker } from "../components/assign-worker";
+import { Edit } from "../components/EditComplaint";
 import { Validate } from "../components/validate";
 
 
@@ -236,6 +238,8 @@ export const Dashboard = () => {
 				</div>
 			
 			<Complaint/>
+			<AssignWorker/>
+			<Edit/>
             
 			<br>
 			</br>
