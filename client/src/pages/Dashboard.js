@@ -10,6 +10,9 @@ import { blue} from '@mui/material/colors';
 import ForwardIcon from '@mui/icons-material/Forward';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import MuiCheckbox from '@mui/material/Checkbox';
+import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
 
@@ -41,6 +44,19 @@ const handleAssignClick = () => {
 	// some action
 }
 
+function Checkbox1({ label, icon, checkedIcon }) {
+	return (
+	  <FormControlLabel
+		label={label}
+		
+		control={
+		  <MuiCheckbox defaultChecked icon={icon} checkedIcon={checkedIcon} />
+		}
+	  />
+	);
+  }
+
+
 const columns = [
 	{ field: 'id', headerName: 'ID', width: 80 },
 	{
@@ -59,19 +75,9 @@ const columns = [
 	  field: 'numvotes',
 	  headerName: 'Num-Votes',
 	  type: 'number',
-	  width: 140,
+	  width: 120,
 	  editable: true,
-	  renderCell: (cellValues) => {
-		return (
-		<FormControlLabel
-		control={<Checkbox icon={<FavoriteBorder />} 
-					checkedIcon={<Favorite />}
-			name="checkedH" />}
-		label="votes"
-		// Vishnu- Daa ivide ee votes inte stalath numvotes akan patuvo??
-		/>
-		);
-	  }
+	  
 	},
 	{
 		field: 'reg_at',
@@ -84,7 +90,7 @@ const columns = [
 		field: 'edit',
 		headerName: 'Edit',
 		type: 'button',
-		width: 158,
+		width: 178,
 		editable: true,
 		renderCell: (cellValues) => {
 			return (
@@ -101,6 +107,16 @@ const columns = [
 				<IconButton color="secondary" aria-label="add an alarm" onClick={handleAssignClick} >
 				<AssignmentIndIcon fontSize="small" style={{ color: blue[500] }} />
 				</IconButton>
+				<Checkbox1
+					label="CheckCircleTwoToneIcon"
+					icon={<RadioButtonUncheckedIcon />}
+					checkedIcon={<CheckCircleTwoToneIcon />}
+					
+					
+				/>
+
+
+				
 
 		</div>
 
