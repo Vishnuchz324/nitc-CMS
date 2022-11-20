@@ -69,7 +69,7 @@ model Reviewer {
 
 model Work {
   id            Int       @id @default(autoincrement())
-  assignedBy    Int       @unique
+  assignedBy    Int
   complaintId   Int       @unique
   validatedId   Int       @unique
   workerName    String

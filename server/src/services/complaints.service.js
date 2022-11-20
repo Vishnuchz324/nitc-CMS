@@ -142,7 +142,6 @@ const getAllComplaints = async (userId) => {
 		delete complaint.Work;
 		delete complaint.Validated;
 		complaint.createdAt = new Date(complaint.createdAt).toDateString();
-
 		return complaint;
 	});
 	return complaints;
@@ -279,21 +278,6 @@ const updateComplaint = async (complaintId, user, complaintData) => {
 };
 
 /**
- * Update the complaint status
- */
-const updateComplaintStatus = async (complaintId, status) => {
-	const complaint = await prisma.complaint.update({
-		where: {
-			id: complaintId,
-		},
-		data: {
-			status: status,
-		},
-	});
-	return complaint;
-};
-
-/**
  * Upvotes a complaint
  */
 const upVoteComplaint = async (complaintId, userId) => {
@@ -332,6 +316,5 @@ export default {
 	createComplaint,
 	removeComplaint,
 	updateComplaint,
-	updateComplaintStatus,
 	upVoteComplaint,
 };

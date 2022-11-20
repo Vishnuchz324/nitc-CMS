@@ -95,10 +95,7 @@ const validateComplaint = async (complaintId, adminId, reviewerId, remarks) => {
 				remarks: remarks,
 			},
 		});
-		await complaintService.updateComplaintStatus(
-			complaintId,
-			COMPLAINT_STATUS.VERIFIED
-		);
+
 		return validated;
 	} catch (err) {
 		throw err;

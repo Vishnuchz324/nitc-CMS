@@ -28,6 +28,17 @@ router.get("/", verifyReviewerOrAdmin, adminController.getAllAdmins);
 router.get("/users", verifyAdmin, adminController.getAllUsers);
 
 /**
+ * Route for registering a reviewer.
+ * @name get/close/[:validatedId]
+ */
+router.get(
+	"/close/:validateId",
+	validator([validateQuery("validateId").exists().toInt().isNumeric()]),
+	verifyAdmin,
+	adminController.closeComplaint
+);
+
+/**
  * Route to fetch all the assigned complaints
  * @name get/assigned
  */
@@ -46,7 +57,7 @@ router.post(
 
 /**
  * Route for registering a reviewer.
- * @name post/assign/[:complaintId]
+ * @name post/assign/[:validatedId]
  */
 router.post(
 	"/assign/:validateId",

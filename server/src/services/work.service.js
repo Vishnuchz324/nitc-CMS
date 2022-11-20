@@ -1,4 +1,5 @@
 import { prisma } from "./database.service.js";
+import { COMPLAINT_STATUS } from "./enums/complaint.enum.js";
 
 const isWorkAssignedToComplaint = async (complaintId) => {
 	try {
@@ -32,7 +33,24 @@ const createWork = async (workData) => {
 	}
 };
 
+const closeWork = async (validatedId) => {
+	try {
+		const work = prisma.work.update({
+			where: {
+				validatedId: validatedId,
+			},
+			data: {
+				status: COMPLAINT_STATUS.COMPLETED,
+			},
+		});
+		return work;
+	} catch (err) {
+		throw errr;
+	}
+};
+
 export default {
 	isWorkAssignedToComplaint,
 	createWork,
+	closeWork,
 };

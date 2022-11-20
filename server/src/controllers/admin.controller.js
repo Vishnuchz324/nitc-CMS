@@ -133,7 +133,15 @@ const assignWork = async (req, res) => {
 	}
 };
 
-const closeComplaint = () => {};
+const closeComplaint = async (req, res) => {
+	try {
+		const validateId = parseInt(req.params.validateId);
+		const work = await workService.closeWork(validateId);
+		res.status(HttpStatusCodes.OK).send(work);
+	} catch (err) {
+		console.log(err);
+	}
+};
 
 export default {
 	getAllUsers,
@@ -141,4 +149,5 @@ export default {
 	getAssignedComplaints,
 	createReviewer,
 	assignWork,
+	closeComplaint,
 };
