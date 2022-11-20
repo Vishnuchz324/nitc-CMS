@@ -1,9 +1,8 @@
 import { prisma } from "./database.service.js";
+import { ROLES } from "./enums/auth.enum.js";
 
 /**
  * Checks wheather the email is registered
- * @param {string} email - the email to be searched
- * @returns  {boolean}
  */
 const isEmailExists = async (email) => {
 	try {
@@ -21,8 +20,6 @@ const isEmailExists = async (email) => {
 
 /**
  * Checks wheather the contact is registered
- * @param {string} contact - the contact to be searched
- * @returns  {boolean}
  */
 const isContactExists = async (contact) => {
 	try {
@@ -38,8 +35,10 @@ const isContactExists = async (contact) => {
 	}
 };
 
+/**
+ * Update role of the profile
+ */
 const updateProfileRole = async (profileId, role) => {
-	console.log(profileId, role);
 	try {
 		let profile = await prisma.profile.update({
 			where: {
@@ -56,6 +55,9 @@ const updateProfileRole = async (profileId, role) => {
 	}
 };
 
+/**
+ * Returns the profile with the passed credentials
+ */
 const getProfileFromData = async (loginData) => {
 	let profile = await prisma.profile.findUnique({
 		where: {
@@ -69,9 +71,43 @@ const getProfileFromData = async (loginData) => {
 	return profile;
 };
 
+const getProfileFromId = async (profileId) => {
+	let profile = await prisma.profile.findUnique({
+		where: {
+			id: profileId,
+		},
+		select: {
+			name: true,
+			email: true,
+			contact: true,
+			role: true,
+			User: {
+				select: {
+					department: true,
+					rollNo: true,
+				},
+			},
+			Admin: {
+				select: {
+					designation: true,
+				},
+			},
+		},
+	});
+	if (profile.role === ROLES.USER || profile.role === ROLES.REVIEWER) {
+		profile.department = profile.User.department;
+		profile.rollNo = profile.User.rollNo;
+	} else {
+		profile.designation = profile.Admin.designation;
+	}
+	delete profile.User;
+	delete profile.Admin;
+	return profile;
+};
 export default {
 	isContactExists,
 	isEmailExists,
 	getProfileFromData,
+	getProfileFromId,
 	updateProfileRole,
 };

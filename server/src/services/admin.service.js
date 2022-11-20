@@ -2,22 +2,9 @@ import { prisma } from "./database.service.js";
 import profileService from "./profile.service.js";
 import reviewerService from "./reviewer.service.js";
 
-const createReviewer = async (userId, profileId) => {
-	try {
-		const existingReviewer = await reviewerService.getReviewerUser(userId);
-		if (!existingReviewer) {
-			const reviewer = reviewerService.createReviewer(userId);
-			const profile = await profileService.updateProfileRole(
-				profileId,
-				"REVIEWER"
-			);
-			return reviewer;
-		} else return existingReviewer;
-	} catch (err) {
-		throw err;
-	}
-};
-
+/**
+ * Returns the admin with the given id
+ */
 const getAdminById = async (adminId) => {
 	try {
 		let admin = await prisma.admin.findUnique({
@@ -31,18 +18,9 @@ const getAdminById = async (adminId) => {
 	}
 };
 
-const getAdminFromProfile = async (profileId) => {
-	try {
-		const admin = await prisma.admin.findUnique({
-			where: {
-				profileId: profileId,
-			},
-		});
-	} catch (err) {
-		throw err;
-	}
-};
-
+/**
+ * Returns all the admins
+ */
 const getAllAdmins = async () => {
 	try {
 		let admins = await prisma.admin.findMany({
@@ -56,9 +34,22 @@ const getAllAdmins = async () => {
 		throw err;
 	}
 };
+
+/**
+ * Creates a reviewer
+ */
+const createReviewer = async (userId, profileId) => {
+	try {
+		await profileService.updateProfileRole(profileId, "REVIEWER");
+		const reviewer = reviewerService.createReviewer(userId);
+		return reviewer;
+	} catch (err) {
+		throw err;
+	}
+};
+
 export default {
 	getAdminById,
-	getAdminFromProfile,
 	getAllAdmins,
 	createReviewer,
 };

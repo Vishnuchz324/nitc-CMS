@@ -6,8 +6,6 @@ import validateService from "./validate.service.js";
 
 /**
  * Returns the complaint with the given id
- * @param {number} id - the id to be searched
- * @returns  {object} - complaint
  */
 const getComplaintById = async (id) => {
 	const complaint = await prisma.complaint.findUnique({
@@ -20,8 +18,6 @@ const getComplaintById = async (id) => {
 
 /**
  * Returns the complaint with the given title
- * @param {string} title - the title to be searched
- * @returns  {object} - complaint
  */
 const getComplaintByTitle = async (title) => {
 	const complaint = await prisma.complaint.findFirst({
@@ -33,9 +29,7 @@ const getComplaintByTitle = async (title) => {
 };
 
 /**
- * Returns the complaint belonging to the user
- * @param {object} user - the user data
- * @returns  {object[]} - complaints array
+ * Returns the complaint registered by the given user
  */
 const getComplaintByUser = async (user) => {
 	let complaints = await prisma.complaint.findMany({
@@ -45,8 +39,19 @@ const getComplaintByUser = async (user) => {
 		select: {
 			id: true,
 			title: true,
+			createdAt: true,
 			description: true,
-			status: true,
+			Validated: {
+				select: {
+					id: true,
+				},
+			},
+			Work: {
+				select: {
+					id: true,
+					status: true,
+				},
+			},
 			_count: {
 				select: {
 					upvotedBy: true,
@@ -63,6 +68,15 @@ const getComplaintByUser = async (user) => {
 		complaints.map((complaint) => {
 			complaint.numVotes = complaint._count.upvotedBy;
 			delete complaint._count;
+
+			let status = COMPLAINT_STATUS.NOT_VERIFIED;
+			if (complaint.Work) status = complaint.Work.status;
+			else if (complaint.Validated) status = COMPLAINT_STATUS.VERIFIED;
+
+			complaint.status = status;
+			delete complaint.Work;
+			delete complaint.Validated;
+			complaint.createdAt = new Date(complaint.createdAt).toDateString();
 			return complaint;
 		});
 	return complaints;
@@ -70,7 +84,6 @@ const getComplaintByUser = async (user) => {
 
 /**
  * Returns all the registered complaints
- * @returns  {object[]} - complaints array
  */
 const getAllComplaints = async (userId) => {
 	let complaints = await prisma.complaint.findMany({
@@ -78,8 +91,19 @@ const getAllComplaints = async (userId) => {
 			id: true,
 			title: true,
 			description: true,
-			status: true,
 			userId: true,
+			createdAt: true,
+			Validated: {
+				select: {
+					id: true,
+				},
+			},
+			Work: {
+				select: {
+					id: true,
+					status: true,
+				},
+			},
 			upvotedBy: {
 				select: { id: true },
 			},
@@ -98,6 +122,7 @@ const getAllComplaints = async (userId) => {
 	complaints = complaints.map((complaint) => {
 		const numVotes = complaint._count.upvotedBy;
 		const upVotedUsers = complaint.upvotedBy;
+
 		let upvoted = false;
 
 		upVotedUsers.map((user) => {
@@ -109,11 +134,23 @@ const getAllComplaints = async (userId) => {
 		delete complaint.upvotedBy;
 		delete complaint._count;
 
+		let status = COMPLAINT_STATUS.NOT_VERIFIED;
+		if (complaint.Work) status = complaint.Work.status;
+		else if (complaint.Validated) status = COMPLAINT_STATUS.VERIFIED;
+
+		complaint.status = status;
+		delete complaint.Work;
+		delete complaint.Validated;
+		complaint.createdAt = new Date(complaint.createdAt).toDateString();
+
 		return complaint;
 	});
 	return complaints;
 };
 
+/**
+ * Returns all number of upvotes to a complaint
+ */
 const getNumberUpVotes = async (complaintId) => {
 	const numVotes = await prisma.complaint.findUnique({
 		where: {
@@ -130,6 +167,9 @@ const getNumberUpVotes = async (complaintId) => {
 	return numVotes._count.upvotedBy;
 };
 
+/**
+ * Returns all the upvoted complaints
+ */
 const getUpvotedComplaints = async (userId) => {
 	const complaints = await prisma.complaint.findMany({
 		where: {
@@ -145,9 +185,7 @@ const getUpvotedComplaints = async (userId) => {
 };
 
 /**
- * creates a new complaint in the database
- * @param {object} complaintData complaint data from the client
- * @returns complaint
+ * Creates a new complaint in the database
  */
 const createComplaint = async (complaintData, user) => {
 	let errors = [];
@@ -161,7 +199,6 @@ const createComplaint = async (complaintData, user) => {
 				data: {
 					title: complaintData.title,
 					description: complaintData.description,
-					status: complaintData.status,
 					numVotes: complaintData.numVotes,
 					user: {
 						connect: {
@@ -176,9 +213,12 @@ const createComplaint = async (complaintData, user) => {
 	return [errors, complaint];
 };
 
+/**
+ * Deletes a complaint
+ */
 const removeComplaint = async (complaintId) => {
 	try {
-		await validateService.removeFromValidation(complaintId);
+		await validateService.removeComplaintFromValidation(complaintId);
 		const complaint = await prisma.complaint.delete({
 			where: {
 				id: complaintId,
@@ -191,11 +231,7 @@ const removeComplaint = async (complaintId) => {
 };
 
 /**
- * Returns all the registered complaints
- * @param {number} complaintId - the id of the complaint to be modified
- * @param {object} user - the user data
- * @param {object} complaintData complaint data from the client
- * @returns  {object} - complaint
+ * Update a complaint
  */
 const updateComplaint = async (complaintId, user, complaintData) => {
 	let errors = [];
@@ -213,7 +249,11 @@ const updateComplaint = async (complaintId, user, complaintData) => {
 			// checks if another complaint xists with the same title
 			if (complaintData.title) {
 				let complaintWithTitle = await getComplaintByTitle(complaintData.title);
-				if (complaintWithTitle) errors.push(HttStatusMessage.COMPLAINT_EXISTS);
+				if (complaintWithTitle) {
+					console.log(complaintWithTitle, complaintId);
+					if (complaintWithTitle.id !== complaintId)
+						errors.push(HttStatusMessage.COMPLAINT_EXISTS);
+				}
 			}
 
 			complaintData.title = complaintData.title || complaintById.title;
@@ -238,6 +278,9 @@ const updateComplaint = async (complaintId, user, complaintData) => {
 	return [errors, complaint];
 };
 
+/**
+ * Update the complaint status
+ */
 const updateComplaintStatus = async (complaintId, status) => {
 	const complaint = await prisma.complaint.update({
 		where: {
@@ -250,6 +293,9 @@ const updateComplaintStatus = async (complaintId, status) => {
 	return complaint;
 };
 
+/**
+ * Upvotes a complaint
+ */
 const upVoteComplaint = async (complaintId, userId) => {
 	let errors = [];
 	let complaint = {};
@@ -282,6 +328,7 @@ export default {
 	getComplaintById,
 	getComplaintByUser,
 	getAllComplaints,
+	getUpvotedComplaints,
 	createComplaint,
 	removeComplaint,
 	updateComplaint,

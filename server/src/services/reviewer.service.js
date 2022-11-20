@@ -1,5 +1,8 @@
 import { prisma } from "./database.service.js";
 
+/**
+ * Returns the reviewer with the given id
+ */
 const getReviewerById = async (reviewerId) => {
 	const reviewer = await prisma.reviewer.findUnique({
 		where: {
@@ -13,6 +16,9 @@ const getReviewerById = async (reviewerId) => {
 	return reviewer;
 };
 
+/**
+ * Returns the reviewer with the given user id
+ */
 const getReviewerUser = async (userId) => {
 	try {
 		const reviewer = await prisma.reviewer.findUnique({
@@ -26,19 +32,9 @@ const getReviewerUser = async (userId) => {
 	}
 };
 
-const createReviewer = async (userId) => {
-	try {
-		const reviewer = await prisma.reviewer.create({
-			data: {
-				userId: userId,
-			},
-		});
-		return reviewer;
-	} catch (err) {
-		throw err;
-	}
-};
-
+/**
+ * Retrusn all the reviewers
+ */
 const getAllReviewers = async () => {
 	try {
 		let reviewers = await prisma.reviewer.findMany({
@@ -68,6 +64,22 @@ const getAllReviewers = async () => {
 			return { ...reviewer, ...user, ...profile };
 		});
 		return reviewers;
+	} catch (err) {
+		throw err;
+	}
+};
+
+/**
+ * Creates a reviewer
+ */
+const createReviewer = async (userId) => {
+	try {
+		const reviewer = await prisma.reviewer.create({
+			data: {
+				userId: userId,
+			},
+		});
+		return reviewer;
 	} catch (err) {
 		throw err;
 	}

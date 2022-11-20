@@ -7,7 +7,7 @@ import {
 
 /**
  * Get all the complaints registered to the user
- * @returns complaint array
+ * @returns collection of complaints
  */
 const getRegisteredComplaints = async (req, res) => {
 	try {
@@ -21,7 +21,7 @@ const getRegisteredComplaints = async (req, res) => {
 
 /**
  * Get all the complaints
- * @returns complaint array
+ * @returns collection of complaint
  */
 const getAllComplaints = async (req, res) => {
 	const user = req.user;
@@ -80,6 +80,10 @@ const updateComplaint = async (req, res) => {
 	}
 };
 
+/**
+ * Upvote a complaint
+ * @returns complaint after upvoting
+ */
 const upVoteComplaint = async (req, res) => {
 	try {
 		const userId = req.user.id;
@@ -97,6 +101,10 @@ const upVoteComplaint = async (req, res) => {
 	}
 };
 
+/**
+ * Delete a complaint
+ * @returns deleted complaint
+ */
 const deleteComplaint = async (req, res) => {
 	try {
 		const complaintId = parseInt(req.params.complaintId);
@@ -108,9 +116,9 @@ const deleteComplaint = async (req, res) => {
 };
 
 export default {
-	registerComplaint,
 	getAllComplaints,
 	getRegisteredComplaints,
+	registerComplaint,
 	updateComplaint,
 	upVoteComplaint,
 	deleteComplaint,

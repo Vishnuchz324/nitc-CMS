@@ -29,7 +29,13 @@ const signIn = async (req, res) => {
 
 			const tokenData = await authService.generateTokenData(profile);
 			const accesToken = authService.generateAccesToken(tokenData);
-			res.status(HttpStatusCodes.OK).send({ accessToken: accesToken });
+			res
+				.status(HttpStatusCodes.OK)
+				.send({
+					accessToken: accesToken,
+					email: loginData.email,
+					role: profile.role,
+				});
 		} else {
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
@@ -46,30 +52,40 @@ const signIn = async (req, res) => {
  */
 const signUp = async (req, res) => {
 	const profileData = req.profile;
+	console.log(profileData);
 	try {
 		// check if the email is already registered
 		if (await profileService.isEmailExists(profileData.email))
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
 				.send({ message: HttStatusMessage.EMAIL_EXISTS });
-
 		// check if the contact number is already registered
-		if (awaitprofileService.isContactExists(profileData.contact))
+		else if (await profileService.isContactExists(profileData.contact))
 			res
 				.status(HttpStatusCodes.BAD_REQUEST)
 				.send({ message: HttStatusMessage.CONTACT_EXISTS });
+		else {
+			try {
+				// create s anew user in the database
+				const [profile, errors] = await authService.createUser(profileData);
 
-		// create s anew user in the database
-		const [profile, errors] = await authService.createUser(profileData);
-
-		if (errors.length !== 0) {
-			res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
+				if (errors.length !== 0) {
+					res.status(HttpStatusCodes.BAD_REQUEST).send({ message: errors });
+				}
+				// generates an access token
+				const loggedInProfile = await profileService.getProfileFromData(
+					profileData
+				);
+				const tokenData = await authService.generateTokenData(loggedInProfile);
+				const accesToken = authService.generateAccesToken(tokenData);
+				profile.token = accesToken;
+				res.status(HttpStatusCodes.CREATED).send(profile);
+			} catch (err) {
+				res
+					.status(HttpStatusCodes.BAD_REQUEST)
+					.send(HttStatusMessage.ROLL_NUMBER_EXISTS);
+			}
 		}
-		// generates an access token
-		const tokenData = await authService.generateTokenData(profile);
-		const accesToken = authService.generateAccesToken(tokenData);
-		profile.token = accesToken;
-		res.status(HttpStatusCodes.CREATED).send(profile);
 	} catch (err) {
 		console.log(err);
 	}

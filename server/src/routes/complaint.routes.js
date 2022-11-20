@@ -17,27 +17,20 @@ import {
 const router = express.Router();
 
 /**
- * Route to get complaints registerd by the user.
+ * Route to fetch complaints registerd by the user.
  * @name get/
- * verifyUser - ensure proper autherization and extracts the user details
- * getAllComplaints - gets all the complaints registerd by the user.
  */
 router.get("/", verifyUser, complaintController.getRegisteredComplaints);
 
 /**
- * Route to get all complaints.
+ * Route to fetch all the complaints.
  * @name get/all
- * getAllComplaints - gets all the registered complaints that are not completed.
  */
 router.get("/all", verifyUser, complaintController.getAllComplaints);
 
 /**
- * Route serving registering new complaint.
+ * Route for registering a complaint.
  * @name post/register
- * validate - validate the body data with the provided constraints
- * verifyUser - ensure proper autherization and extracts the user details
- * getComplaintFromBody - extracts the complaint data from the request body
- * registerComplaint - rgeisters a new complaint
  */
 router.post(
 	"/register",
@@ -52,11 +45,7 @@ router.post(
 
 /**
  * Route for updating the registerd complaint.
- * @name put/update/:complaintId
- * validate - validate the body data with the provided constraints
- * verifyUser - ensure proper autherization and extracts the user details
- * getComplaintFromBody - extracts the complaint data from the request body
- * updateComplaint - updated the registered complaint
+ * @name put/update/[:complaintId]
  */
 router.put(
 	"/update/:complaintId",
@@ -73,6 +62,10 @@ router.put(
 	complaintController.updateComplaint
 );
 
+/**
+ * Route for upvoting a complaint.
+ * @name put/update/[:complaintId]
+ */
 router.put(
 	"/upvote/:complaintId",
 	validator([validateQuery("complaintId").exists().toInt().isNumeric()]),
@@ -80,6 +73,10 @@ router.put(
 	complaintController.upVoteComplaint
 );
 
+/**
+ * Route for deleting a complaint.
+ * @name put/update/[:complaintId]
+ */
 router.delete(
 	"/:complaintId",
 	validator([validateQuery("complaintId").exists().toInt().isNumeric()]),

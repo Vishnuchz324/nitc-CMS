@@ -15,18 +15,14 @@ import {
 const router = express.Router();
 
 /**
- * Route registering a reviewer.
+ * Route to fetch all reviewers.
  * @name get/
- * verifyReviewerOrAdmin - ensure proper autherization
- * getAllReviewers - gets all the reviewers
  */
 router.get("/", verifyReviewerOrAdmin, reviewerController.getAllReviewers);
 
 /**
- * Route registering a reviewer.
+ * Route to fectgh a reviewer by id.
  * @name get/:[reviewerId]
- * verifyAdmin - ensure proper autherization and extracts the admin route
- * getAllReviewers - gets all the reviewers
  */
 router.get(
 	"/:reviewerId",
@@ -36,10 +32,8 @@ router.get(
 );
 
 /**
- * Route registering a reviewer.
- * @name post/validate/:complaintId
- * verifyReviewerOrAdmin - ensure proper autherization
- * validateComplaint - validates a complaint
+ * Route to validate a complaint.
+ * @name post/validate/[:complaintId]
  */
 router.post(
 	"/validate/:complaintId",

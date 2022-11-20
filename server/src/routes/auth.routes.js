@@ -12,11 +12,24 @@ import {
 const router = express.Router();
 
 /**
- * Route serving login form.
+ * Route for signing up.
+ * @name post/signup
+ */
+router.post(
+	"/signup",
+	validator([
+		validateBody("name").exists().isString(),
+		validateBody("email").exists().isEmail(),
+		validateBody("contact").exists().isInt(),
+		validateBody("password").exists().isLength({ min: 5 }),
+	]),
+	getProfileFromBody,
+	authController.signUp
+);
+
+/**
+ * Route for signing in.
  * @name post/signin
- * validateBody - validate the body data with the provided constraints
- * getLoginData - extracts the login data from the request body
- * signIn - controller handling signIn
  */
 router.post(
 	"/signin",
@@ -26,26 +39,6 @@ router.post(
 	]),
 	getLoginDataFromBody,
 	authController.signIn
-);
-
-/**
- * Route serving signup form.
- * @name post/signup
- * validateBody - validate the body data with the provided constraints
- * getProfileFromBody - extracts the profile data from the request body
- * signUp - controller handling signUp
- */
-router.post(
-	"/signup",
-	validator([
-		validateBody("name").exists().isString(),
-		validateBody("email").exists().isEmail(),
-		validateBody("contact").exists().isInt(),
-		validateBody("role").exists().isIn(["USER", "ADMIN", "REVIEWER"]),
-		validateBody("password").exists().isLength({ min: 5 }),
-	]),
-	getProfileFromBody,
-	authController.signUp
 );
 
 export default router;

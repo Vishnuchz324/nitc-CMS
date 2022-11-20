@@ -2,6 +2,9 @@ import { prisma } from "./database.service.js";
 import { ROLES } from "./enums/auth.enum.js";
 import profileService from "./profile.service.js";
 
+/**
+ * Returns the user with the given id
+ */
 const getUserById = async (userId) => {
 	try {
 		let user = await prisma.user.findUnique({
@@ -15,19 +18,9 @@ const getUserById = async (userId) => {
 	}
 };
 
-const getUserFromProfile = async (profileId) => {
-	try {
-		let user = await prisma.user.findUnique({
-			where: {
-				profileId: profileId,
-			},
-		});
-		return user;
-	} catch (err) {
-		throw err;
-	}
-};
-
+/**
+ * Returns all the users
+ */
 const getAllUsers = async () => {
 	try {
 		let users = await prisma.user.findMany({
@@ -56,6 +49,9 @@ const getAllUsers = async () => {
 	}
 };
 
+/**
+ * Creates a user
+ */
 const createUser = async (profileData) => {
 	try {
 		const user = await prisma.user.create({
@@ -78,4 +74,4 @@ const createUser = async (profileData) => {
 		throw err;
 	}
 };
-export default { getUserById, getUserFromProfile, createUser, getAllUsers };
+export default { getUserById, createUser, getAllUsers };

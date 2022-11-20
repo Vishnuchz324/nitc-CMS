@@ -21,7 +21,6 @@ const getProfileFromBody = (req, res, next) => {
 			email: body.email,
 			password: body.password,
 			contact: body.contact,
-			role: body.role,
 			designation: body.designation,
 			department: body.department,
 			rollNo: body.rollNo,
