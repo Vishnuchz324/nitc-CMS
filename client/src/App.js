@@ -1,12 +1,16 @@
 import * as React from "react";
-import { Home } from "./pages/Home";
-
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import Home from "./pages/Home";
 
 const App = () => {
 	return (
-		<div className='App'>
-			<Home />
-			
+		<div>
+			<BrowserRouter>
+				<AuthProvider>
+					<Home />
+				</AuthProvider>
+			</BrowserRouter>
 		</div>
 	);
 };
